@@ -43,7 +43,7 @@ export interface PropertyResponse {
 class PropertyService {
   static async getAllProperties(): Promise<Property[]> {
     try {
-      const response = await api.get<PropertyResponse>('/properties');
+      const response = await api.get<PropertyResponse>('/booking-service/api/property');
       return response.data.data.properties;
     } catch (error) {
       console.error('Error fetching properties:', error);
@@ -53,7 +53,7 @@ class PropertyService {
 
   static async getPropertyById(id: string): Promise<Property> {
     try {
-      const response = await api.get<{code: number; data: Property}>(`/properties/${id}`);
+      const response = await api.get<{code: number; data: Property}>(`/booking-service/api/property/${id}`);
       return response.data.data;
     } catch (error) {
       console.error(`Error fetching property with id ${id}:`, error);

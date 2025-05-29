@@ -9,7 +9,7 @@ interface Campaign {
   image: string;
 }
 
-const API_URL = 'https://6678e6e40bd452505620352b.mockapi.io/Campaigns';
+const API_URL = 'https://6678e6e40bd452505620352b.mockapi.io/Property';
 
 export const getCampaigns = async (): Promise<Campaign[]> => {
   try {

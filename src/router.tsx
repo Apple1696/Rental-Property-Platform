@@ -16,7 +16,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'properties',
-        element: <ProtectedRoute><Properties /></ProtectedRoute>
+        element: <Properties/>
       }
     ]
   },

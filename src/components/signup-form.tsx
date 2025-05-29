@@ -22,6 +22,7 @@ export function SignupForm({ className, onSwitchToLogin, ...props }: SignupFormP
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [showEmailSentMessage, setShowEmailSentMessage] = useState(false);
   const navigate = useNavigate();
 
   const validateForm = () => {
@@ -57,6 +58,7 @@ export function SignupForm({ className, onSwitchToLogin, ...props }: SignupFormP
     setIsLoading(true);
     setError("");
     setSuccessMessage("");
+    setShowEmailSentMessage(false);
 
     if (!validateForm()) {
       setIsLoading(false);
@@ -71,24 +73,45 @@ export function SignupForm({ className, onSwitchToLogin, ...props }: SignupFormP
         password
       });
 
-      if (response.success) {
-        setSuccessMessage("Registration successful! Please check your email to confirm your account.");
-        // Clear the form
-        setFirstName("");
-        setLastName("");
-        setEmail("");
-        setPassword("");
-        setConfirmPassword("");
-      } else {
-        setError("Registration failed. Please try again.");
-      }
+      // Always show email sent message if the request was successful
+      setShowEmailSentMessage(true);
+      // Clear the form
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      
     } catch (err: any) {
       console.error("Error:", err);
-      setError(err.response?.data?.message || "An error occurred during sign up.");
+      const errorMessage = err.response?.data?.message || err.message || "An error occurred during sign up.";
+      setError(errorMessage);
+      // Log more details for debugging
+      console.log("Full error object:", err);
+      console.log("Response data:", err.response?.data);
     } finally {
       setIsLoading(false);
     }
   };
+
+  if (showEmailSentMessage) {
+    return (
+      <div className="flex flex-col items-center gap-6 p-8 text-center">
+        <h2 className="text-2xl font-bold">Check Your Email</h2>
+        <div className="text-muted-foreground">
+          <p>We have sent a confirmation email to:</p>
+          <p className="font-medium mt-2">{email}</p>
+        </div>
+        <div className="text-sm text-muted-foreground mt-4">
+          <p>Please check your email and click on the verification link to complete your registration.</p>
+          <p className="mt-2">Once verified, you will be able to log in to your account.</p>
+        </div>
+        <Button onClick={onSwitchToLogin} className="mt-4">
+          Go to Login
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className={cn("flex flex-col gap-6", className)} {...props}>

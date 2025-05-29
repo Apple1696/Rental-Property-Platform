@@ -27,6 +27,16 @@ interface SignupResponse {
     success: boolean;
 }
 
+interface VerifyEmailRequest {
+    token: string;
+}
+
+interface VerifyEmailResponse {
+    success: boolean;
+    message: string;
+    token?: string;  // Optional token that might be returned after verification
+}
+
 export const authService = {
     login: async (request: LoginRequest) => {
         const response = await api.post<LoginResponse>('/user-service/api/auth/login', request);
@@ -36,7 +46,19 @@ export const authService = {
     },
 
     signup: async (request: SignupRequest) => {
-        const response = await api.post<SignupResponse>('/user-service/api/auth/signup', request);
+        const response = await api.post<SignupResponse>('/user-service/api/auth/register', request);
+        return response.data;
+    },
+
+    verifyEmail: async (token: string) => {
+        const request: VerifyEmailRequest = { token };
+        const response = await api.post<VerifyEmailResponse>('/user-service/api/auth/verify-email', request);
+        if (response.data.success) {
+            // After email verification, we might get a login token directly
+            if (response.data.token) {
+                localStorage.setItem('token', response.data.token);
+            }
+        }
         return response.data;
     },
 
