@@ -18,7 +18,7 @@ interface Gallery6Props {
 }
 
 const Gallery6 = ({
-  heading = "Current Blood Donation Campaigns",
+  heading = "Featured Properties",
   demoUrl = "#",
 }: Gallery6Props) => {
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
@@ -77,7 +77,7 @@ const Gallery6 = ({
               href={demoUrl}
               className="group inline-flex items-center gap-1 text-sm font-medium md:text-base lg:text-lg"
             >
-              View all campaigns
+              View all properties
               <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-1" />
             </a>
           </div>

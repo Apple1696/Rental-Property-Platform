@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useNavigate } from "react-router-dom"
+import { authService } from "@/services/authentication"
 
 interface LoginFormProps extends React.ComponentPropsWithoutRef<"form"> {
   onSwitchToSignup?: () => void
@@ -25,13 +26,11 @@ export function LoginForm({ className, onSwitchToSignup, ...props }: LoginFormPr
     setError("");
 
     try {
-      // TODO: Implement your authentication logic here
-      // For now, we'll just simulate a successful login
-      console.log('Login attempt with:', { email, password });
-      navigate("/home");
-    } catch (err) {
+      await authService.login({ email, password });
+      navigate("/");
+    } catch (err: any) {
       console.error("Error:", err);
-      setError("An error occurred during sign in.");
+      setError(err.response?.data?.message || "An error occurred during sign in.");
     } finally {
       setIsLoading(false);
     }

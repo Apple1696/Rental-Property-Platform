@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useNavigate } from "react-router-dom"
+import { authService } from "@/services/authentication"
 
 interface SignupFormProps extends React.ComponentPropsWithoutRef<"form"> {
   onSwitchToLogin?: () => void
@@ -20,26 +21,70 @@ export function SignupForm({ className, onSwitchToLogin, ...props }: SignupFormP
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
+
+  const validateForm = () => {
+    if (!firstName.trim()) {
+      setError("First name is required");
+      return false;
+    }
+    if (!lastName.trim()) {
+      setError("Last name is required");
+      return false;
+    }
+    if (!email.trim()) {
+      setError("Email is required");
+      return false;
+    }
+    if (!password) {
+      setError("Password is required");
+      return false;
+    }
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long");
+      return false;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
+    setSuccessMessage("");
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
+    if (!validateForm()) {
       setIsLoading(false);
       return;
     }
 
     try {
-      // TODO: Implement your signup logic here
-      console.log('Signup attempt with:', { firstName, lastName, email, password });
-      navigate("/");
-    } catch (err) {
+      const response = await authService.signup({
+        firstName,
+        lastName,
+        email,
+        password
+      });
+
+      if (response.success) {
+        setSuccessMessage("Registration successful! Please check your email to confirm your account.");
+        // Clear the form
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+      } else {
+        setError("Registration failed. Please try again.");
+      }
+    } catch (err: any) {
       console.error("Error:", err);
-      setError("An error occurred during sign up.");
+      setError(err.response?.data?.message || "An error occurred during sign up.");
     } finally {
       setIsLoading(false);
     }
@@ -49,10 +94,18 @@ export function SignupForm({ className, onSwitchToLogin, ...props }: SignupFormP
     <form onSubmit={handleSubmit} className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Create an account</h1>
+        <p className="text-balance text-sm text-muted-foreground">
+          Please fill in all fields to create your account
+        </p>
       </div>
       {error && (
         <div className="text-sm text-red-500 text-center">
           {error}
+        </div>
+      )}
+      {successMessage && (
+        <div className="text-sm text-green-500 text-center">
+          {successMessage}
         </div>
       )}
       <div className="grid gap-6">

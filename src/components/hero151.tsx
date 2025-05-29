@@ -39,10 +39,18 @@ const Hero151 = ({
   testimonial = {
     quote: "Found my dream vacation home within minutes. The photos were exactly as advertised!",
     author: "Sarah Chen",
-    role: "Verified Guest",
+    role: "Verified Guests",
     company: "5★ Rating",
     avatars: [
-      { image: "/images/HomePage/guest-avatar.jpg", fallback: "SC" },
+      { image: "/images/HomePage/Avatars/Sarah-Chen.jpg", fallback: "AB" },
+      { image: "/images/HomePage/Avatars/BillGates.webp", fallback: "CD" },
+      { image: "/images/HomePage/Avatars/Jeff-Bezos.jpg", fallback: "EF" },
+      { image: "/images/HomePage/Avatars/Woman-1.jpg", fallback: "GH" },
+      { image: "/images/HomePage/Avatars/Woman-2.jpg", fallback: "GH" },
+      { image: "/images/HomePage/Avatars/Man-1.jpg", fallback: "GH" },
+      { image: "/images/HomePage/Avatars/Man-2.jpg", fallback: "GH" },
+      { image: "", fallback: "+254" },
+
     ],
   },
   images = {
@@ -71,11 +79,11 @@ const Hero151 = ({
               </Button>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <div className="relative flex -space-x-[1.5rem]">
+              <div className="relative flex -space-x-[1rem]">
                 {testimonial.avatars.map((avatar, index) => (
                   <Avatar
                     key={index}
-                    className={`relative z-${index + 1}0 flex h-12 w-12 shrink-0 rounded-full border-2 border-white object-cover`}
+                    className={`relative z-${index + 1}0 flex h-12 w-12 shrink-0 rounded-full border-2 border-black object-cover`}
                   >
                     <AvatarImage src={avatar.image} alt="" />
                     <AvatarFallback>{avatar.fallback}</AvatarFallback>
@@ -87,7 +95,7 @@ const Hero151 = ({
                   &quot;{testimonial.quote}&quot;
                 </p>
                 <p className="text-sm font-medium text-muted-2-foreground">
-                  {testimonial.author}, {testimonial.role} @
+                  {testimonial.role} @
                   {testimonial.company}
                 </p>
               </div>
