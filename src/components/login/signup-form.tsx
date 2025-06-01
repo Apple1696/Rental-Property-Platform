@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useNavigate } from "react-router-dom"
 import { authService } from "@/services/authentication"
 
 interface SignupFormProps extends React.ComponentPropsWithoutRef<"form"> {
@@ -23,7 +22,6 @@ export function SignupForm({ className, onSwitchToLogin, ...props }: SignupFormP
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [showEmailSentMessage, setShowEmailSentMessage] = useState(false);
-  const navigate = useNavigate();
 
   const validateForm = () => {
     if (!firstName.trim()) {
@@ -73,6 +71,9 @@ export function SignupForm({ className, onSwitchToLogin, ...props }: SignupFormP
         password
       });
 
+      // Set success message from response if available
+      setSuccessMessage(response.message || "Account created successfully!");
+      
       // Always show email sent message if the request was successful
       setShowEmailSentMessage(true);
       // Clear the form
