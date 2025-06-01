@@ -37,6 +37,25 @@ interface VerifyEmailResponse {
     token?: string;  // Optional token that might be returned after verification
 }
 
+interface ForgotPasswordRequest {
+    email: string;
+}
+
+interface ForgotPasswordResponse {
+    success: boolean;
+    message: string;
+}
+
+interface ChangePasswordRequest {
+    newPassword: string;
+    token: string;  // Token received from the reset password email link
+}
+
+interface ChangePasswordResponse {
+    success: boolean;
+    message: string;
+}
+
 export const authService = {
     login: async (request: LoginRequest) => {
         const response = await api.post<LoginResponse>('/user-service/api/auth/login', request);
@@ -68,6 +87,16 @@ export const authService = {
 
     isAuthenticated: () => {
         return !!localStorage.getItem('token');
+    },
+
+    forgotPassword: async (request: ForgotPasswordRequest) => {
+        const response = await api.post<ForgotPasswordResponse>('/user-service/api/auth/forgot-password', request);
+        return response.data;
+    },
+
+    changePassword: async (request: ChangePasswordRequest) => {
+        const response = await api.post<ChangePasswordResponse>('/user-service/api/auth/change-password', request);
+        return response.data;
     }
 }
 

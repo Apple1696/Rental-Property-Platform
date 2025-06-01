@@ -1,7 +1,7 @@
 "use client"
 import { HeartPlus } from "lucide-react"
-import { LoginForm } from "@/components/login-form"
-import { SignupForm } from "@/components/signup-form"
+import { LoginForm } from "@/components/login/login-form"
+import { SignupForm } from "@/components/login/signup-form"
 import { useState, useEffect } from "react"
 import { useSearchParams } from "react-router-dom"
 
