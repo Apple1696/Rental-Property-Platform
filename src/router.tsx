@@ -3,6 +3,7 @@ import CustomerLayout from '@/layouts/CustomerLayout'
 import Home from './pages/Home/Home'
 import LoginPage from './pages/Login/Login'
 import Properties from './pages/Properties/Properties'
+import PropertyDetail from './pages/Properties/PropertyDetail'
 // import ProtectedRoute from '@/components/ProtectedRoute'
 import Dashboard from './pages/Dashboard/page'
 import { ForgotPasswordForm } from './components/login/forgot-password'
@@ -19,6 +20,10 @@ export const router = createBrowserRouter([
       {
         path: 'properties',
         element: <Properties/>
+      },
+      {
+        path: 'properties/:id',
+        element: <PropertyDetail/>
       }
     ]
   },

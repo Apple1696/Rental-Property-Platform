@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useNavigate } from "react-router-dom"
 import { authService } from "@/services/authentication"
 
 interface LoginFormProps extends React.ComponentPropsWithoutRef<"form"> {
@@ -18,7 +17,6 @@ export function LoginForm({ className, onSwitchToSignup, ...props }: LoginFormPr
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,10 +25,14 @@ export function LoginForm({ className, onSwitchToSignup, ...props }: LoginFormPr
 
     try {
       await authService.login({ email, password });
-      navigate("/");
+      // Only redirect if login was successful
+      window.location.href = '/';
     } catch (err: any) {
       console.error("Error:", err);
-      setError(err.response?.data?.message || "An error occurred during sign in.");
+      // Display the specific error message from the auth service
+      setError(err.message || "An error occurred during sign in.");
+      // Clear password field on error
+      setPassword("");
     } finally {
       setIsLoading(false);
     }

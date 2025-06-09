@@ -140,20 +140,42 @@ const Navbar1 = ({
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userInitials, setUserInitials] = useState("U");
 
+  const checkAuth = () => {
+    const isAuth = authService.isAuthenticated();
+    setIsAuthenticated(isAuth);
+    // TODO: Get user data from localStorage or API
+    // For now, using placeholder initials
+    setUserInitials("U");
+  };
+
   useEffect(() => {
-    const checkAuth = () => {
-      const isAuth = authService.isAuthenticated();
-      setIsAuthenticated(isAuth);
-      // TODO: Get user data from localStorage or API
-      // For now, using placeholder initials
-      setUserInitials("U");
+    // Check auth state when component mounts
+    checkAuth();
+
+    // Listen for storage events (logout from another tab)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'token') {
+        checkAuth();
+      }
     };
 
-    checkAuth();
+    // Listen for custom auth change events
+    const handleAuthChange = () => {
+      checkAuth();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('authStateChange', handleAuthChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('authStateChange', handleAuthChange);
+    };
   }, []);
 
   const handleLogout = () => {
     authService.logout();
+    setIsAuthenticated(false);
     navigate('/login');
   };
 

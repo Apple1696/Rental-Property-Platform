@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Card,
   CardContent,
@@ -45,53 +46,59 @@ export default function PropertyList() {
       <h1 className="text-3xl font-bold mb-8">Available Properties</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {properties.map((property) => (
-          <Card key={property.id} className="overflow-hidden">
-            <CardHeader className="p-0">
-              <AspectRatio ratio={16 / 9}>
-                {property.images.length > 0 ? (
-                  <img
-                    src={property.images[0]}
-                    alt={property.title}
-                    className="object-cover w-full h-full"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                    No Image Available
+          <Link 
+            key={property.id} 
+            to={`/properties/${property.id}`}
+            className="block transition-transform hover:scale-[1.02] hover:shadow-lg"
+          >
+            <Card className="overflow-hidden h-full">
+              <CardHeader className="p-0">
+                <AspectRatio ratio={16 / 9}>
+                  {property.images.length > 0 ? (
+                    <img
+                      src={property.images[0]}
+                      alt={property.title}
+                      className="object-cover w-full h-full"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                      No Image Available
+                    </div>
+                  )}
+                </AspectRatio>
+              </CardHeader>
+              <CardContent className="p-4">
+                <CardTitle className="text-xl mb-2">{property.title}</CardTitle>
+                <CardDescription className="mb-4">
+                  {property.description.length > 150
+                    ? `${property.description.substring(0, 150)}...`
+                    : property.description}
+                </CardDescription>
+                <div className="flex gap-4 text-sm text-gray-600">
+                  <div className="flex items-center gap-1">
+                    <Bed className="w-4 h-4" />
+                    <span>{property.bedrooms} Beds</span>
                   </div>
-                )}
-              </AspectRatio>
-            </CardHeader>
-            <CardContent className="p-4">
-              <CardTitle className="text-xl mb-2">{property.title}</CardTitle>
-              <CardDescription className="mb-4">
-                {property.description.length > 150
-                  ? `${property.description.substring(0, 150)}...`
-                  : property.description}
-              </CardDescription>
-              <div className="flex gap-4 text-sm text-gray-600">
-                <div className="flex items-center gap-1">
-                  <Bed className="w-4 h-4" />
-                  <span>{property.bedrooms} Beds</span>
+                  <div className="flex items-center gap-1">
+                    <Bath className="w-4 h-4" />
+                    <span>{property.bathrooms} Baths</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Users className="w-4 h-4" />
+                    <span>Up to {property.maxGuests}</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Bath className="w-4 h-4" />
-                  <span>{property.bathrooms} Baths</span>
+              </CardContent>
+              <CardFooter className="p-4 pt-0 flex justify-between items-center">
+                <div className="text-lg font-bold">
+                  ${property.pricePerNight} <span className="text-sm font-normal">/ night</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Users className="w-4 h-4" />
-                  <span>Up to {property.maxGuests}</span>
+                <div className="text-sm text-gray-600">
+                  +${property.serviceFee} service fee
                 </div>
-              </div>
-            </CardContent>
-            <CardFooter className="p-4 pt-0 flex justify-between items-center">
-              <div className="text-lg font-bold">
-                ${property.pricePerNight} <span className="text-sm font-normal">/ night</span>
-              </div>
-              <div className="text-sm text-gray-600">
-                +${property.serviceFee} service fee
-              </div>
-            </CardFooter>
-          </Card>
+              </CardFooter>
+            </Card>
+          </Link>
         ))}
       </div>
     </div>
