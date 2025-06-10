@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  react-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nls-fe
+    ports:
+      - "8050:80"
+    restart: always
