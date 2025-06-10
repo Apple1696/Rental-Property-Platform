@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  react-prod:
+  nls-fe:
     build:
       context: .
       dockerfile: Dockerfile
@@ -9,3 +9,9 @@ services:
     ports:
       - "8050:80"
     restart: always
+    networks:
+      - fe-network
+
+networks:
+  fe-network:
+    external: true   # Khai báo là external để dùng chung với backend
