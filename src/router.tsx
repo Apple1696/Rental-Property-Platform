@@ -8,6 +8,8 @@ import PropertyDetail from './pages/Properties/PropertyDetail'
 import Dashboard from './pages/Dashboard/page'
 import { ForgotPasswordForm } from './components/login/forgot-password'
 import { ChangePasswordForm } from './components/login/change-password'
+import PaymentSuccess from './pages/Payment/PaymentSuccess'
+import PaymentFail from './pages/Payment/PaymentFail'
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -24,7 +26,8 @@ export const router = createBrowserRouter([
       {
         path: 'properties/:id',
         element: <PropertyDetail/>
-      }
+      },
+     
     ]
   },
   {
@@ -42,5 +45,13 @@ export const router = createBrowserRouter([
   {
     path: '/change-password',
     element: <ChangePasswordForm/>
+  },
+  {
+    path: 'payment-success',
+    element: <PaymentSuccess/>
+  },
+  {
+    path: 'payment-failed',
+    element: <PaymentFail/>
   }
 ]) 
