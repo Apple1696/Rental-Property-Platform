@@ -16,7 +16,6 @@ import {
   Users,
   Clock,
   MapPin,
-  Calendar,
   Home,
   Star,
 } from 'lucide-react';
@@ -162,7 +161,7 @@ export default function PropertyDetail() {
           <Card className="sticky top-8">
             <CardHeader>
               <CardTitle className="flex justify-between items-baseline">
-                <span>${property.pricePerNight} Per Night</span>
+                <span>${property.currentDayPrice} Per Night</span>
                 {/* <span className="text-sm font-normal">night</span> */}
               </CardTitle>
             </CardHeader>
@@ -170,9 +169,7 @@ export default function PropertyDetail() {
               <div className="border rounded-lg p-4 mb-4">
                 <div className="grid grid-cols-2 gap-2 mb-4">
                   <div className="col-span-2">
-                    <label className="block text-sm font-medium mb-1">Dates</label>
                     <div className="flex items-center gap-2 border rounded-lg p-2">
-                      <Calendar className="w-4 h-4" />
                       <span>Add dates</span>
                     </div>
                   </div>
@@ -188,8 +185,8 @@ export default function PropertyDetail() {
               </div>
               <div className="space-y-4">
                 <div className="flex justify-between">
-                  <span>${property.pricePerNight} × 1 night</span>
-                  <span>${property.pricePerNight}</span>
+                  <span>${property.currentDayPrice} × 1 night</span>
+                  <span>${property.currentDayPrice}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Service fee</span>
@@ -198,7 +195,7 @@ export default function PropertyDetail() {
                 <Separator />
                 <div className="flex justify-between font-bold">
                   <span>Total</span>
-                  <span>${property.pricePerNight + property.serviceFee}</span>
+                  <span>${property.currentDayPrice + property.serviceFee}</span>
                 </div>
               </div>
             </CardContent>

@@ -1,28 +1,6 @@
 import api from '../config/api';
 
-export interface PropertyImage {
-  id: string;
-  propertyId: string;
-  imageUrl: string;
-  caption: string | null;
-  isPrimary: boolean;
-  displayOrder: number;
-  createdAt: string;
-  createdBy: string;
-  updatedAt: string;
-  updatedBy: string;
-}
 
-export interface DayPrice {
-  id: string;
-  propertyId: string;
-  dayOfWeek: number;
-  price: number;
-  createdAt: string;
-  createdBy: string;
-  updatedAt: string;
-  updatedBy: string;
-}
 
 export interface Property {
   id: string;
@@ -51,10 +29,9 @@ export interface Property {
   createdBy: string;
   updatedAt: string;
   updatedBy: string | null;
-  images: PropertyImage[];
+  imageUrl: string;
   amenities: any[];
   categories: any[];
-  dayPrices: DayPrice[];
 }
 
 export interface PropertyResponse {

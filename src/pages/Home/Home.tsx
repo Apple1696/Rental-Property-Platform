@@ -1,7 +1,7 @@
-import { Hero151 } from '@/components/hero151'
-import { Hero45 } from '@/components/hero45'
+import { Hero45 } from '@/components/home/hero45'
 import { Gallery6 } from '@/components/gallery6'
-import { Hero1 } from '@/components/hero1'
+import { Hero1 } from '@/components/home/hero1'
+import { Hero151 } from '@/components/home/hero151'
 
 export default function Home() {
   return (

@@ -54,10 +54,10 @@ export default function PropertyList() {
             <Card className="overflow-hidden h-full">
               <CardHeader className="p-0">
                 <AspectRatio ratio={16 / 9}>
-                  {property.images.length > 0 ? (
+                  {property.imageUrl ? (
                     <img
-                      src={property.images[0].imageUrl}
-                      alt={property.images[0].caption || property.title}
+                      src={property.imageUrl}
+                      alt={property.title}
                       className="object-cover w-full h-full"
                     />
                   ) : (
