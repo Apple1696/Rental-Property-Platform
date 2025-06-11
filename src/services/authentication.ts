@@ -27,16 +27,6 @@ interface SignupResponse {
     success: boolean;
 }
 
-interface VerifyEmailRequest {
-    token: string;
-}
-
-interface VerifyEmailResponse {
-    success: boolean;
-    message: string;
-    token?: string;  // Optional token that might be returned after verification
-}
-
 interface ForgotPasswordRequest {
     email: string;
 }
@@ -64,8 +54,8 @@ const dispatchAuthEvent = () => {
 export const authService = {
     login: async (request: LoginRequest) => {
         try {
-            const response = await api.post<LoginResponse>('/user-service/api/auth/login', request);
-            
+                const response = await api.post<LoginResponse>('/user-service/api/auth/login', request);
+                
             // Check if we have a valid token in the response
             if (!response.data.token) {
                 throw new Error('Invalid response: No token received');
@@ -93,19 +83,6 @@ export const authService = {
 
     signup: async (request: SignupRequest) => {
         const response = await api.post<SignupResponse>('/user-service/api/auth/register', request);
-        return response.data;
-    },
-
-    verifyEmail: async (token: string) => {
-        const request: VerifyEmailRequest = { token };
-        const response = await api.post<VerifyEmailResponse>('/user-service/api/auth/verify-email', request);
-        if (response.data.success) {
-            // After email verification, we might get a login token directly
-            if (response.data.token) {
-                localStorage.setItem('token', response.data.token);
-                dispatchAuthEvent();
-            }
-        }
         return response.data;
     },
 

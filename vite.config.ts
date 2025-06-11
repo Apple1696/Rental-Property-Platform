@@ -17,6 +17,20 @@ export default defineConfig(({  mode }) => {
     },
     server: {
       port: 8050,
+      proxy: {
+        '/booking-service': {
+          target: env.VITE_API_URL,
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path
+        },
+        '/user-service': {
+          target: env.VITE_API_URL,
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path
+        }
+      }
     },
     define: {
       __APP_ENV__: JSON.stringify(env.APP_ENV),

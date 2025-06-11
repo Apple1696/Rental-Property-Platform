@@ -10,6 +10,8 @@ import { ForgotPasswordForm } from './components/login/forgot-password'
 import { ChangePasswordForm } from './components/login/change-password'
 import PaymentSuccess from './pages/Payment/PaymentSuccess'
 import PaymentFail from './pages/Payment/PaymentFail'
+import RegisterConfirm from './pages/Register/RegisterSuccess'
+import RegisterFail from './pages/Register/RegisterFail'
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -53,5 +55,13 @@ export const router = createBrowserRouter([
   {
     path: 'payment-failed',
     element: <PaymentFail/>
+  },
+  {
+    path: 'register-success',
+    element: <RegisterConfirm/>
+  },
+  {
+    path: 'register-fail',
+    element: <RegisterFail/>
   }
 ]) 

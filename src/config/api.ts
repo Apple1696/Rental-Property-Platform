@@ -1,24 +1,22 @@
 import axios from "axios"
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
-    headers:{
+    // Base URL should be relative since we're using Vite's proxy
+    baseURL: '/',
+    headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
     },
-    withCredentials: true // This is important for CORS requests with credentials
+    withCredentials: true // Important for CORS requests with credentials
 });
 
 // Add request interceptor to handle auth token
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
-        if(token){
+        if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
-        // Ensure headers are properly set for each request
-        config.headers['Content-Type'] = 'application/json';
-        config.headers['Accept'] = 'application/json';
         return config;
     },
     (error) => {
@@ -29,14 +27,22 @@ api.interceptors.request.use(
 // Add response interceptor to handle errors
 api.interceptors.response.use(
     (response) => response,
-    (error) => {
+    async (error) => {
         // Handle unauthorized errors (401)
-        if(error.response && error.response.status === 401){
-            // Redirect to login page if token is invalid
+        if (error.response?.status === 401) {
             localStorage.removeItem('token');
             window.location.href = '/login';
         }
-        return Promise.reject(error);
+        
+        // Handle network errors
+        if (!error.response) {
+            console.error('Network Error:', error);
+            throw new Error('Network error occurred. Please check your connection.');
+        }
+
+        // Handle other API errors
+        const errorMessage = error.response?.data?.message || error.message || 'An error occurred';
+        throw new Error(errorMessage);
     }
 );
 

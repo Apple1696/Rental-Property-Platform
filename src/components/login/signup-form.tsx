@@ -40,10 +40,6 @@ export function SignupForm({ className, onSwitchToLogin, ...props }: SignupFormP
       setError("Password is required");
       return false;
     }
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters long");
-      return false;
-    }
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       return false;
@@ -74,8 +70,9 @@ export function SignupForm({ className, onSwitchToLogin, ...props }: SignupFormP
       // Set success message from response if available
       setSuccessMessage(response.message || "Account created successfully!");
       
-      // Always show email sent message if the request was successful
+      // Show email sent message if the request was successful
       setShowEmailSentMessage(true);
+      
       // Clear the form
       setFirstName("");
       setLastName("");
@@ -87,9 +84,6 @@ export function SignupForm({ className, onSwitchToLogin, ...props }: SignupFormP
       console.error("Error:", err);
       const errorMessage = err.response?.data?.message || err.message || "An error occurred during sign up.";
       setError(errorMessage);
-      // Log more details for debugging
-      console.log("Full error object:", err);
-      console.log("Response data:", err.response?.data);
     } finally {
       setIsLoading(false);
     }
@@ -107,6 +101,16 @@ export function SignupForm({ className, onSwitchToLogin, ...props }: SignupFormP
           <p>Please check your email and click on the verification link to complete your registration.</p>
           <p className="mt-2">Once verified, you will be able to log in to your account.</p>
         </div>
+        {error && (
+          <div className="text-sm text-red-500">
+            {error}
+          </div>
+        )}
+        {successMessage && (
+          <div className="text-sm text-green-500">
+            {successMessage}
+          </div>
+        )}
         <Button onClick={onSwitchToLogin} className="mt-4">
           Go to Login
         </Button>

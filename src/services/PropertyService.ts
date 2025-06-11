@@ -1,5 +1,29 @@
 import api from '../config/api';
 
+export interface PropertyImage {
+  id: string;
+  propertyId: string;
+  imageUrl: string;
+  caption: string | null;
+  isPrimary: boolean;
+  displayOrder: number;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
+}
+
+export interface DayPrice {
+  id: string;
+  propertyId: string;
+  dayOfWeek: number;
+  price: number;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
+}
+
 export interface Property {
   id: string;
   hostId: string;
@@ -14,7 +38,7 @@ export interface Property {
   zipCode: string;
   latitude: number;
   longitude: number;
-  pricePerNight: number;
+  currentDayPrice: number;
   serviceFee: number;
   maxGuests: number;
   bedrooms: number;
@@ -23,14 +47,14 @@ export interface Property {
   checkInTime: string;
   checkOutTime: string;
   status: string;
-  createdAt: string;
+  createdAt: string | null;
   createdBy: string;
   updatedAt: string;
   updatedBy: string | null;
-  images: string[];
+  images: PropertyImage[];
   amenities: any[];
   categories: any[];
-  dayPrices: any[];
+  dayPrices: DayPrice[];
 }
 
 export interface PropertyResponse {

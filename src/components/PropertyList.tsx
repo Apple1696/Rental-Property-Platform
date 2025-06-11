@@ -56,8 +56,8 @@ export default function PropertyList() {
                 <AspectRatio ratio={16 / 9}>
                   {property.images.length > 0 ? (
                     <img
-                      src={property.images[0]}
-                      alt={property.title}
+                      src={property.images[0].imageUrl}
+                      alt={property.images[0].caption || property.title}
                       className="object-cover w-full h-full"
                     />
                   ) : (
@@ -91,7 +91,7 @@ export default function PropertyList() {
               </CardContent>
               <CardFooter className="p-4 pt-0 flex justify-between items-center">
                 <div className="text-lg font-bold">
-                  ${property.pricePerNight} <span className="text-sm font-normal">/ night</span>
+                  ${property.currentDayPrice} <span className="text-sm font-normal">/ night</span>
                 </div>
                 <div className="text-sm text-gray-600">
                   +${property.serviceFee} service fee
