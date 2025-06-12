@@ -15,6 +15,9 @@ import RegisterConfirm from './pages/Register/RegisterSuccess'
 import RegisterFail from './pages/Register/RegisterFail'
 import { EmailConfirmation } from './components/login/email-confirmation'
 import PropertyListing from './pages/Host/PropertyListing'
+import AddProperty from './pages/Host/AddProperty'
+import ViewDetail from './pages/Host/ViewDetail'
+import UpdateProperty from './pages/Host/UpdateProperty'
 
 export const router = createBrowserRouter([
   {
@@ -44,8 +47,16 @@ export const router = createBrowserRouter([
         element: <PropertyListing />
       },
       {
+        path: 'add-property',
+        element: <AddProperty />
+      },
+      {
         path: 'properties/:id',
-        element: <PropertyDetail />
+        element: <ViewDetail />
+      },
+      {
+        path: 'properties/:id/edit',
+        element: <UpdateProperty />
       }
     ]
   },

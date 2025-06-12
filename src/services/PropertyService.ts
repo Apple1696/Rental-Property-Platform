@@ -15,6 +15,7 @@ export interface Property {
   latitude: number;
   longitude: number;
   currentDayPrice: number;
+  dayPrices: DayPrice[];
   serviceFee: number;
   maxGuests: number;
   bedrooms: number;
@@ -39,7 +40,13 @@ export interface PropertyResponse {
   };
 }
 
+export interface DayPrice {
+  dayOfWeek: number;
+  price: number;
+}
+
 export interface CreatePropertyRequest {
+  hostId: string;
   title: string;
   description: string;
   propertyType: string;
@@ -51,7 +58,7 @@ export interface CreatePropertyRequest {
   zipCode: string;
   latitude: number;
   longitude: number;
-  currentDayPrice: number;
+  dayPrices: DayPrice[];
   serviceFee: number;
   maxGuests: number;
   bedrooms: number;
@@ -60,8 +67,6 @@ export interface CreatePropertyRequest {
   checkInTime: string;
   checkOutTime: string;
   imageUrl: string;
-  amenities?: string[];
-  categories?: string[];
 }
 
 class PropertyService {
@@ -94,6 +99,19 @@ class PropertyService {
       return response.data.data;
     } catch (error) {
       console.error('Error adding property:', error);
+      throw error;
+    }
+  }
+
+  static async updateProperty(propertyData: CreatePropertyRequest): Promise<Property> {
+    try {
+      const response = await api.put<{code: number; data: Property}>(
+        '/booking-service/api/property/update',
+        propertyData
+      );
+      return response.data.data;
+    } catch (error) {
+      console.error('Error updating property:', error);
       throw error;
     }
   }
