@@ -101,7 +101,7 @@ export function SignupForm({ className, onSwitchToLogin, ...props }: SignupFormP
           <p>Please check your email and click on the verification link to complete your registration.</p>
           <p className="mt-2">Once verified, you will be able to log in to your account.</p>
         </div>
-        {error && (
+        {/* {error && (
           <div className="text-sm text-red-500">
             {error}
           </div>
@@ -110,7 +110,7 @@ export function SignupForm({ className, onSwitchToLogin, ...props }: SignupFormP
           <div className="text-sm text-green-500">
             {successMessage}
           </div>
-        )}
+        )} */}
         <Button onClick={onSwitchToLogin} className="mt-4">
           Go to Login
         </Button>

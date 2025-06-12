@@ -7,11 +7,12 @@ import PropertyDetail from './pages/Properties/PropertyDetail'
 // import ProtectedRoute from '@/components/ProtectedRoute'
 import Dashboard from './pages/Dashboard/page'
 import { ForgotPasswordForm } from './components/login/forgot-password'
-import { ChangePasswordForm } from './components/login/change-password'
+import { ResetPasswordForm } from './components/login/reset-password'
 import PaymentSuccess from './pages/Payment/PaymentSuccess'
 import PaymentFail from './pages/Payment/PaymentFail'
 import RegisterConfirm from './pages/Register/RegisterSuccess'
 import RegisterFail from './pages/Register/RegisterFail'
+import { EmailConfirmation } from './components/login/email-confirmation'
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -41,12 +42,12 @@ export const router = createBrowserRouter([
     element: <Dashboard/>
   },
   {
-    path: '/forgot-password',
+    path: '/user/forget-password',
     element: <ForgotPasswordForm/>
   },
   {
-    path: '/change-password',
-    element: <ChangePasswordForm/>
+    path: '/user/reset-password',
+    element: <ResetPasswordForm/>
   },
   {
     path: 'payment-success',
@@ -63,5 +64,9 @@ export const router = createBrowserRouter([
   {
     path: 'register-fail',
     element: <RegisterFail/>
+  },
+  {
+    path: 'user/confirm',
+    element: <EmailConfirmation/>
   }
 ]) 

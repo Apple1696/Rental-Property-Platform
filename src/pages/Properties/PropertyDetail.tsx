@@ -20,6 +20,7 @@ import {
   Star,
 } from 'lucide-react';
 import PropertyService, { Property } from '@/services/PropertyService';
+import { Calendar22 } from '@/components/Calendar';
 
 export default function PropertyDetail() {
   const { id } = useParams();
@@ -69,9 +70,9 @@ export default function PropertyDetail() {
       {/* Property Images */}
       <div className="mb-8">
         <AspectRatio ratio={16 / 9}>
-          {property.images && property.images.length > 0 ? (
+          {property.imageUrl ? (
             <img
-              src={property.images[0]}
+              src={property.imageUrl}
               alt={property.title}
               className="rounded-lg object-cover w-full h-full"
             />
@@ -202,6 +203,7 @@ export default function PropertyDetail() {
           </Card>
         </div>
       </div>
+      <Calendar22 />
     </div>
   );
 }

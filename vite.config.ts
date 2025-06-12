@@ -3,10 +3,9 @@ import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
 import { defineConfig, loadEnv } from "vite"
 
-// https://vite.dev/config/
-export default defineConfig(({  mode }) => {
-  // Load env file based on `mode` in the current working directory.
+export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
+  const apiTarget = env.VITE_API_URL || 'http://34.124.245.123:8080'
   
   return {
     plugins: [react(), tailwindcss()],
@@ -18,17 +17,41 @@ export default defineConfig(({  mode }) => {
     server: {
       port: 8050,
       proxy: {
-        '/booking-service': {
-          target: env.VITE_API_URL,
+        // Match any request starting with /user-service
+        '^/user-service/.*': {
+          target: apiTarget,
           changeOrigin: true,
           secure: false,
-          rewrite: (path) => path
+          logLevel: 'debug', // This will show proxy logs
+          configure: (proxy, options) => {
+            proxy.on('error', (err, req, res) => {
+              console.log('❌ Proxy error:', err.message);
+            });
+            proxy.on('proxyReq', (proxyReq, req, res) => {
+              console.log(`🔄 Proxying: ${req.method} ${req.url} -> ${options.target}${req.url}`);
+            });
+            proxy.on('proxyRes', (proxyRes, req, res) => {
+              console.log(`✅ Proxy response: ${proxyRes.statusCode} for ${req.url}`);
+            });
+          }
         },
-        '/user-service': {
-          target: env.VITE_API_URL,
+        // Match any request starting with /booking-service
+        '^/booking-service/.*': {
+          target: apiTarget,
           changeOrigin: true,
           secure: false,
-          rewrite: (path) => path
+          logLevel: 'debug',
+          configure: (proxy, options) => {
+            proxy.on('error', (err, req, res) => {
+              console.log('❌ Proxy error:', err.message);
+            });
+            proxy.on('proxyReq', (proxyReq, req, res) => {
+              console.log(`🔄 Proxying: ${req.method} ${req.url} -> ${options.target}${req.url}`);
+            });
+            proxy.on('proxyRes', (proxyRes, req, res) => {
+              console.log(`✅ Proxy response: ${proxyRes.statusCode} for ${req.url}`);
+            });
+          }
         }
       }
     },

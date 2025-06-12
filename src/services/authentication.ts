@@ -27,6 +27,12 @@ interface SignupResponse {
     success: boolean;
 }
 
+interface EmailConfirmationResponse {
+    success: boolean;
+    message: string;
+    token?: string;
+}
+
 interface ForgotPasswordRequest {
     email: string;
 }
@@ -36,15 +42,16 @@ interface ForgotPasswordResponse {
     message: string;
 }
 
-interface ChangePasswordRequest {
-    newPassword: string;
-    token: string;  // Token received from the reset password email link
+interface ResetPasswordRequest {
+    token: string;
+    password: string;
 }
 
-interface ChangePasswordResponse {
+interface ResetPasswordResponse {
     success: boolean;
     message: string;
 }
+
 
 // Custom event for auth state changes
 const dispatchAuthEvent = () => {
@@ -86,6 +93,23 @@ export const authService = {
         return response.data;
     },
 
+    confirmEmail: async (token: string) => {
+        try {
+            const response = await api.get<EmailConfirmationResponse>(`/user-service/api/user/confirm?token=${token}`);
+            
+            if (response.data.success && response.data.token) {
+                // Store the token in localStorage if provided
+                localStorage.setItem('token', response.data.token);
+                dispatchAuthEvent();
+            }
+            
+            return response.data;
+        } catch (error: any) {
+            const errorMessage = error.response?.data?.message || error.message || 'Email confirmation failed';
+            throw new Error(errorMessage);
+        }
+    },
+
     logout: () => {
         localStorage.removeItem('token');
         dispatchAuthEvent();
@@ -96,13 +120,37 @@ export const authService = {
     },
 
     forgotPassword: async (request: ForgotPasswordRequest) => {
-        const response = await api.post<ForgotPasswordResponse>('/user-service/api/auth/forgot-password', request);
-        return response.data;
+        try {
+            console.log('Sending forgot password request:', request);
+            const response = await api.post<ForgotPasswordResponse>('/user-service/api/user/forget-password', request);
+            console.log('Forgot password response:', response.data);
+            return response.data;
+        } catch (error: any) {
+            console.error('Forgot password error:', {
+                message: error.message,
+                response: error.response?.data,
+                status: error.response?.status,
+                config: error.config
+            });
+            throw error;
+        }
     },
 
-    changePassword: async (request: ChangePasswordRequest) => {
-        const response = await api.post<ChangePasswordResponse>('/user-service/api/auth/change-password', request);
-        return response.data;
+    resetPassword: async (request: ResetPasswordRequest) => {
+        try {
+            console.log('Sending reset password request:', request);
+            const response = await api.post<ResetPasswordResponse>('/user-service/api/user/reset-password', request);
+            console.log('Reset password response:', response.data);
+            return response.data;
+        } catch (error: any) {
+            console.error('Reset password error:', {
+                message: error.message,
+                response: error.response?.data,
+                status: error.response?.status,
+                config: error.config
+            });
+            throw error;
+        }
     }
 }
 
