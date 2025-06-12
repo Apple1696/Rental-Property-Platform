@@ -127,8 +127,8 @@ const Navbar1 = ({
       ],
     },
     {
-      title: "Help",
-      url: "#",
+      title: "Switch to Hosting",
+      url: "/hosting",
     },
   ],
   auth = {
@@ -184,19 +184,19 @@ const Navbar1 = ({
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-              <Avatar className="h-8 w-8">
+            <Button variant="ghost" className="relative size-8 rounded-full ring-0 focus:ring-0 focus:ring-offset-0">
+              <Avatar className="h-8 w-8 cursor-pointer">
                 <AvatarFallback>{userInitials}</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56" align="end" forceMount>
-            <DropdownMenuItem onClick={() => navigate('/profile')}>
+          <DropdownMenuContent sideOffset={5} align="end" className="w-56 z-50">
+            <DropdownMenuItem className="cursor-pointer" onClick={() => navigate('/profile')}>
               <User className="mr-2 h-4 w-4" />
               <span>Profile</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
+            <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4" />
               <span>Log out</span>
             </DropdownMenuItem>

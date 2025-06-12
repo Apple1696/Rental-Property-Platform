@@ -10,6 +10,12 @@ import {
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Bed,
   Bath,
@@ -18,15 +24,18 @@ import {
   MapPin,
   Home,
   Star,
+  Calendar as CalendarIcon,
 } from 'lucide-react';
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 import PropertyService, { Property } from '@/services/PropertyService';
-import { Calendar22 } from '@/components/Calendar';
 
 export default function PropertyDetail() {
   const { id } = useParams();
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [dates, setDates] = useState<Date[] | undefined>();
 
   useEffect(() => {
     const fetchProperty = async () => {
@@ -163,31 +172,60 @@ export default function PropertyDetail() {
             <CardHeader>
               <CardTitle className="flex justify-between items-baseline">
                 <span>${property.currentDayPrice} Per Night</span>
-                {/* <span className="text-sm font-normal">night</span> */}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="border rounded-lg p-4 mb-4">
-                <div className="grid grid-cols-2 gap-2 mb-4">
-                  <div className="col-span-2">
-                    <div className="flex items-center gap-2 border rounded-lg p-2">
-                      <span>Add dates</span>
-                    </div>
-                  </div>
-                  <div className="col-span-2">
-                    <label className="block text-sm font-medium mb-1">Guests</label>
-                    <div className="flex items-center gap-2 border rounded-lg p-2">
-                      <Users className="w-4 h-4" />
-                      <span>Add guests</span>
-                    </div>
+              <div className="grid grid-cols-1 gap-4 mb-4">
+                <div>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !dates && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {dates?.length === 0 ? (
+                          <span>Pick your dates</span>
+                        ) : dates?.length === 1 ? (
+                          format(dates[0], "LLL dd, y")
+                        ) : dates?.length === 2 ? (
+                          <>
+                            {format(dates[0], "LLL dd, y")} - {format(dates[1], "LLL dd, y")}
+                          </>
+                        ) : (
+                          <span>Pick your dates</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        initialFocus
+                        mode="range"
+                        defaultMonth={new Date()}
+                        numberOfMonths={2}
+                        selected={dates}
+                        onSelect={setDates}
+                        className="rounded-md border"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Guests</label>
+                  <div className="flex items-center gap-2 border rounded-lg p-2">
+                    <Users className="w-4 h-4" />
+                    <span>Add guests</span>
                   </div>
                 </div>
-                <Button className="w-full">Resereve now</Button>
               </div>
+              <Button className="w-full mb-4">Reserve now</Button>
               <div className="space-y-4">
                 <div className="flex justify-between">
-                  <span>${property.currentDayPrice} × 1 night</span>
-                  <span>${property.currentDayPrice}</span>
+                  <span>${property.currentDayPrice} × {dates?.length === 2 ? Math.ceil((dates[1].getTime() - dates[0].getTime()) / (1000 * 60 * 60 * 24)) : 1} night{dates?.length === 2 && Math.ceil((dates[1].getTime() - dates[0].getTime()) / (1000 * 60 * 60 * 24)) > 1 ? 's' : ''}</span>
+                  <span>${property.currentDayPrice * (dates?.length === 2 ? Math.ceil((dates[1].getTime() - dates[0].getTime()) / (1000 * 60 * 60 * 24)) : 1)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Service fee</span>
@@ -196,14 +234,13 @@ export default function PropertyDetail() {
                 <Separator />
                 <div className="flex justify-between font-bold">
                   <span>Total</span>
-                  <span>${property.currentDayPrice + property.serviceFee}</span>
+                  <span>${(property.currentDayPrice * (dates?.length === 2 ? Math.ceil((dates[1].getTime() - dates[0].getTime()) / (1000 * 60 * 60 * 24)) : 1)) + property.serviceFee}</span>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
       </div>
-      <Calendar22 />
     </div>
   );
 }

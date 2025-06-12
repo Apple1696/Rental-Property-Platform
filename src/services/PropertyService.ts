@@ -1,7 +1,5 @@
 import api from '../config/api';
 
-
-
 export interface Property {
   id: string;
   hostId: string;
@@ -41,6 +39,31 @@ export interface PropertyResponse {
   };
 }
 
+export interface CreatePropertyRequest {
+  title: string;
+  description: string;
+  propertyType: string;
+  roomType: string;
+  address: string;
+  provinceId: string;
+  districtId: string;
+  wardId: string;
+  zipCode: string;
+  latitude: number;
+  longitude: number;
+  currentDayPrice: number;
+  serviceFee: number;
+  maxGuests: number;
+  bedrooms: number;
+  beds: number;
+  bathrooms: number;
+  checkInTime: string;
+  checkOutTime: string;
+  imageUrl: string;
+  amenities?: string[];
+  categories?: string[];
+}
+
 class PropertyService {
   static async getAllProperties(): Promise<Property[]> {
     try {
@@ -58,6 +81,19 @@ class PropertyService {
       return response.data.data;
     } catch (error) {
       console.error(`Error fetching property with id ${id}:`, error);
+      throw error;
+    }
+  }
+
+  static async addProperty(propertyData: CreatePropertyRequest): Promise<Property> {
+    try {
+      const response = await api.post<{code: number; data: Property}>(
+        '/booking-service/api/property/add',
+        propertyData
+      );
+      return response.data.data;
+    } catch (error) {
+      console.error('Error adding property:', error);
       throw error;
     }
   }

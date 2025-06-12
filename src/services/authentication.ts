@@ -6,13 +6,18 @@ interface LoginRequest{
 }
 
 interface LoginResponse {
-    token: string;
-    user: {
-        id: string;
+    code: number;
+    data: {
+        name: string;
         email: string;
-        firstName: string;
-        lastName: string;
-    }
+        phoneNumber: string | null;
+        profilePicture: string | null;
+        identification: string | null;
+        dateOfBirth: string | null;
+        gender: string | null;
+        token: string;
+    };
+    message: string;
 }
 
 interface SignupRequest{
@@ -61,21 +66,40 @@ const dispatchAuthEvent = () => {
 export const authService = {
     login: async (request: LoginRequest) => {
         try {
-                const response = await api.post<LoginResponse>('/user-service/api/auth/login', request);
+            console.log('Attempting login with:', { email: request.email });
+            const response = await api.post<LoginResponse>('/user-service/api/auth/login', request);
+            console.log('Login response:', response.data);
                 
-            // Check if we have a valid token in the response
-            if (!response.data.token) {
+            // Check if we have a valid response structure
+            if (!response.data.data || !response.data.data.token) {
+                console.error('Invalid response structure:', response.data);
                 throw new Error('Invalid response: No token received');
             }
 
             // Store the token in localStorage
-            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('token', response.data.data.token);
+            
+            // Store user data if needed
+            localStorage.setItem('user', JSON.stringify({
+                name: response.data.data.name,
+                email: response.data.data.email
+            }));
+            
             dispatchAuthEvent();
             return response.data;
         } catch (error: any) {
             // Remove any existing token on failed login
             localStorage.removeItem('token');
+            localStorage.removeItem('user');
             dispatchAuthEvent();
+            
+            // Add detailed error logging
+            console.error('Login error details:', {
+                message: error.message,
+                response: error.response?.data,
+                status: error.response?.status,
+                config: error.config
+            });
             
             // Rethrow the error with a more specific message
             if (error.response?.status === 401) {
@@ -83,7 +107,7 @@ export const authService = {
             } else if (error.response?.data?.message) {
                 throw new Error(error.response.data.message);
             } else {
-                throw new Error('An error occurred during login');
+                throw new Error('An error occurred during login. Please check the console for details.');
             }
         }
     },

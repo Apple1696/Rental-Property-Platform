@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
 import CustomerLayout from '@/layouts/CustomerLayout'
+import HostLayout from '@/layouts/HostLayout'
 import Home from './pages/Home/Home'
 import LoginPage from './pages/Login/Login'
 import Properties from './pages/Properties/Properties'
@@ -13,6 +14,8 @@ import PaymentFail from './pages/Payment/PaymentFail'
 import RegisterConfirm from './pages/Register/RegisterSuccess'
 import RegisterFail from './pages/Register/RegisterFail'
 import { EmailConfirmation } from './components/login/email-confirmation'
+import PropertyListing from './pages/Host/PropertyListing'
+
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -30,7 +33,20 @@ export const router = createBrowserRouter([
         path: 'properties/:id',
         element: <PropertyDetail/>
       },
-     
+    ]
+  },
+  {
+    path: '/hosting',
+    element: <HostLayout />,
+    children: [
+      {
+        index: true,
+        element: <PropertyListing />
+      },
+      {
+        path: 'properties/:id',
+        element: <PropertyDetail />
+      }
     ]
   },
   {
