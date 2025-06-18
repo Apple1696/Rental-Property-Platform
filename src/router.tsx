@@ -18,6 +18,7 @@ import PropertyListing from './pages/Host/PropertyListing'
 import AddProperty from './pages/Host/AddProperty'
 import ViewDetail from './pages/Host/ViewDetail'
 import UpdateProperty from './pages/Host/UpdateProperty'
+import { PayosPaymentFlow } from './pages/Payment/Payment'
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ export const router = createBrowserRouter([
         path: 'properties/:id',
         element: <PropertyDetail/>
       },
+      {
+        path: 'payment',
+        element: <PayosPaymentFlow/>
+      }
     ]
   },
   {
@@ -64,10 +69,10 @@ export const router = createBrowserRouter([
     path: '/login',
     element: <LoginPage />
   },
-  {
-    path:'/dashboard',
-    element: <Dashboard/>
-  },
+  // {
+  //   path:'/dashboard',
+  //   element: <Dashboard/>
+  // },
   {
     path: '/user/forget-password',
     element: <ForgotPasswordForm/>

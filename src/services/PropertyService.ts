@@ -69,6 +69,29 @@ export interface CreatePropertyRequest {
   imageUrl: string;
 }
 
+export interface BookingRequest {
+  propertyId: string;
+  checkInDate: string;
+  checkOutDate: string;
+  guestsCount: number;
+  totalNight: number;
+  pricePerNight: number;
+  vat: number;
+  totalAmount: number;
+  subtotalAmount: number;
+  specialRequests: string;
+  paymentMethod: string;
+}
+
+export interface BookingResponse {
+  code: number;
+  data: {
+    bookingId: string;
+    status: string;
+    // Add other booking response fields as needed
+  };
+}
+
 class PropertyService {
   static async getAllProperties(): Promise<Property[]> {
     try {
@@ -112,6 +135,19 @@ class PropertyService {
       return response.data.data;
     } catch (error) {
       console.error('Error updating property:', error);
+      throw error;
+    }
+  }
+
+  static async createBooking(bookingData: BookingRequest): Promise<BookingResponse> {
+    try {
+      const response = await api.post<BookingResponse>(
+        '/booking-service/api/booking',
+        bookingData
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error creating booking:', error);
       throw error;
     }
   }

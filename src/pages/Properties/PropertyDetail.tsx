@@ -1,51 +1,36 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Bed,
-  Bath,
-  Users,
-  Clock,
-  MapPin,
-  Home,
-  Star,
-  Calendar as CalendarIcon,
-} from 'lucide-react';
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-import PropertyService, { Property } from '@/services/PropertyService';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Calendar, MapPin, Users, Bed, Bath, Clock, Star, Wifi, Car, Coffee } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { format } from 'date-fns';
+import { toast } from 'sonner';
+import PropertyService, { Property, BookingRequest } from '../../services/PropertyService';
 
-export default function PropertyDetail() {
-  const { id } = useParams();
+const PropertyDetail = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [dates, setDates] = useState<Date[] | undefined>();
+  const [checkInDate, setCheckInDate] = useState<Date>();
+  const [checkOutDate, setCheckOutDate] = useState<Date>();
+  const [guests, setGuests] = useState(1);
+  const [isBooking, setIsBooking] = useState(false);
 
   useEffect(() => {
     const fetchProperty = async () => {
       if (!id) return;
+      
       try {
-        const data = await PropertyService.getPropertyById(id);
-        setProperty(data);
-      } catch (err) {
-        setError('Failed to fetch property details');
-        console.error(err);
+        setLoading(true);
+        const propertyData = await PropertyService.getPropertyById(id);
+        setProperty(propertyData);
+      } catch (error) {
+        console.error('Error fetching property:', error);
       } finally {
         setLoading(false);
       }
@@ -54,193 +39,370 @@ export default function PropertyDetail() {
     fetchProperty();
   }, [id]);
 
+  const getDayOfWeekPrice = (dayOfWeek: number) => {
+    if (!property) return 0;
+    if (!property.dayPrices) return property.currentDayPrice;
+    
+    const dayPrice = property.dayPrices.find(dp => dp.dayOfWeek === dayOfWeek);
+    return dayPrice ? dayPrice.price : property.currentDayPrice;
+  };
+
+  const calculateTotalPrice = () => {
+    if (!checkInDate || !checkOutDate || !property) return 0;
+    
+    const days = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
+    let totalPrice = 0;
+    
+    for (let i = 0; i < days; i++) {
+      const currentDate = new Date(checkInDate);
+      currentDate.setDate(checkInDate.getDate() + i);
+      const dayOfWeek = currentDate.getDay();
+      totalPrice += getDayOfWeekPrice(dayOfWeek);
+    }
+    
+    return totalPrice;
+  };
+
+  const getAmenityIcon = (amenity: string) => {
+    const amenityLower = amenity.toLowerCase();
+    if (amenityLower.includes('wifi') || amenityLower.includes('internet')) return <Wifi className="w-4 h-4" />;
+    if (amenityLower.includes('parking') || amenityLower.includes('car')) return <Car className="w-4 h-4" />;
+    if (amenityLower.includes('pool') || amenityLower.includes('swimming')) return <Star className="w-4 h-4" />;
+    if (amenityLower.includes('coffee') || amenityLower.includes('kitchen')) return <Coffee className="w-4 h-4" />;
+    return <Star className="w-4 h-4" />;
+  };
+
+  const handleBooking = async () => {
+    if (!property || !checkInDate || !checkOutDate) return;
+
+    try {
+      setIsBooking(true);
+      const totalNights = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
+      const totalPrice = calculateTotalPrice();
+      const vat = totalPrice * 0.1; // Assuming 10% VAT
+      const subtotal = totalPrice + property.serviceFee;
+      const total = subtotal + vat;
+
+      const bookingData: BookingRequest = {
+        propertyId: property.id,
+        checkInDate: format(checkInDate, 'dd-MM-yyyy'),
+        checkOutDate: format(checkOutDate, 'dd-MM-yyyy'),
+        guestsCount: guests,
+        totalNight: totalNights,
+        pricePerNight: property.currentDayPrice,
+        vat: vat,
+        totalAmount: total,
+        subtotalAmount: subtotal,
+        specialRequests: '', // Could add a text field for this
+        paymentMethod: 'credit_card' // Could add payment method selection
+      };
+
+      const response = await PropertyService.createBooking(bookingData);
+      toast.success('Booking created successfully!');
+      navigate('/payment/success'); // Redirect to success page
+    } catch (error) {
+      console.error('Error creating booking:', error);
+      toast.error('Failed to create booking. Please try again.');
+    } finally {
+      setIsBooking(false);
+    }
+  };
+
   if (loading) {
-    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      </div>
+    );
   }
 
-  if (error || !property) {
-    return <div className="flex justify-center items-center min-h-screen text-red-500">{error || 'Property not found'}</div>;
+  if (!property) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Property not found</h2>
+          <p className="text-gray-600">The property you're looking for doesn't exist.</p>
+        </div>
+      </div>
+    );
   }
+
+  const totalPrice = calculateTotalPrice();
+  const nights = checkInDate && checkOutDate ? 
+    Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24)) : 0;
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      {/* Property Title Section */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">{property.title}</h1>
-        <div className="flex items-center gap-2 text-gray-600">
-          <Star className="w-4 h-4" />
-          <span>4.9</span>
-          <span>·</span>
-          <MapPin className="w-4 h-4" />
-          <span>{property.address}, {property.wardId}, {property.districtId}</span>
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Image */}
+      <div className="w-full px-4 lg:px-8 pt-6">
+        <div className="w-full h-96 lg:h-[500px] relative overflow-hidden">
+          <img
+            src={property.imageUrl}
+            alt={property.title}
+            className="w-full h-full object-cover rounded-lg"
+            onError={(e) => {
+              e.currentTarget.src = '/images/HomePage/LuxuryApartment.jpg';
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/30 rounded-lg" />
+          <div className="absolute bottom-6 left-6 text-white">
+            <h1 className="text-3xl lg:text-4xl font-bold mb-2">{property.title}</h1>
+            <div className="flex items-center text-lg">
+              <MapPin className="w-5 h-5 mr-2" />
+              {property.address}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Property Images */}
-      <div className="mb-8">
-        <AspectRatio ratio={16 / 9}>
-          {property.imageUrl ? (
-            <img
-              src={property.imageUrl}
-              alt={property.title}
-              className="rounded-lg object-cover w-full h-full"
-            />
-          ) : (
-            <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
-              No Image Available
-            </div>
-          )}
-        </AspectRatio>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Content */}
-        <div className="lg:col-span-2">
-          {/* Host and Property Type Info */}
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex justify-between items-center">
-                <div>
-                  <h2 className="text-xl">
-                    {property.propertyType} hosted by Host Name
-                  </h2>
-                  <div className="flex gap-4 text-gray-600 mt-2">
-                    <span>{property.maxGuests} guests</span>
-                    <span>·</span>
-                    <span>{property.bedrooms} bedrooms</span>
-                    <span>·</span>
-                    <span>{property.beds} beds</span>
-                    <span>·</span>
-                    <span>{property.bathrooms} bathrooms</span>
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-7 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Property Details */}
+          <div className="lg:col-span-2">
+            <Card className="shadow-lg">
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="text-2xl mb-2">{property.title}</CardTitle>
+                    <div className="flex items-center gap-4 text-gray-600 mb-4">
+                      <Badge variant="secondary" className="text-sm">
+                        {property.propertyType}
+                      </Badge>
+                      <Badge variant="outline" className="text-sm">
+                        {property.roomType}
+                      </Badge>
+                      <Badge 
+                        variant={property.status === 'ACTIVE' ? 'default' : 'destructive'}
+                        className="text-sm"
+                      >
+                        {property.status}
+                      </Badge>
+                    </div>
                   </div>
                 </div>
-              </CardTitle>
-            </CardHeader>
-          </Card>
+              </CardHeader>
+              
+              <CardContent className="space-y-6">
+                {/* Property Stats */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                    <Users className="w-5 h-5 text-blue-600" />
+                    <div>
+                      <p className="text-sm text-gray-600">Guests</p>
+                      <p className="font-semibold">{property.maxGuests}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                    <Bed className="w-5 h-5 text-blue-600" />
+                    <div>
+                      <p className="text-sm text-gray-600">Bedrooms</p>
+                      <p className="font-semibold">{property.bedrooms}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                    <Bed className="w-5 h-5 text-blue-600" />
+                    <div>
+                      <p className="text-sm text-gray-600">Beds</p>
+                      <p className="font-semibold">{property.beds}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                    <Bath className="w-5 h-5 text-blue-600" />
+                    <div>
+                      <p className="text-sm text-gray-600">Bathrooms</p>
+                      <p className="font-semibold">{property.bathrooms}</p>
+                    </div>
+                  </div>
+                </div>
 
-          {/* Key Features */}
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle>What this place offers</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center gap-2">
-                  <Home className="w-5 h-5" />
-                  <span>{property.roomType}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Bed className="w-5 h-5" />
-                  <span>{property.bedrooms} Bedrooms</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Bath className="w-5 h-5" />
-                  <span>{property.bathrooms} Bathrooms</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Users className="w-5 h-5" />
-                  <span>Up to {property.maxGuests} guests</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-5 h-5" />
-                  <span>Check-in: {property.checkInTime}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-5 h-5" />
-                  <span>Check-out: {property.checkOutTime}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                <Separator />
 
-          {/* Description */}
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle>About this space</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-base">
-                {property.description}
-              </CardDescription>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Booking Card */}
-        <div className="lg:col-span-1">
-          <Card className="sticky top-8">
-            <CardHeader>
-              <CardTitle className="flex justify-between items-baseline">
-                <span>${property.currentDayPrice} Per Night</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 gap-4 mb-4">
+                {/* Description */}
                 <div>
+                  <h3 className="text-xl font-semibold mb-3">About this place</h3>
+                  <p className="text-gray-700 leading-relaxed">{property.description}</p>
+                </div>
+
+                <Separator />
+
+                {/* Check-in/out Times */}
+                <div>
+                  <h3 className="text-xl font-semibold mb-3">Check-in & Check-out</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                      <Clock className="w-5 h-5 text-green-600" />
+                      <div>
+                        <p className="text-sm text-gray-600">Check-in</p>
+                        <p className="font-semibold">{property.checkInTime}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+                      <Clock className="w-5 h-5 text-red-600" />
+                      <div>
+                        <p className="text-sm text-gray-600">Check-out</p>
+                        <p className="font-semibold">{property.checkOutTime}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Amenities */}
+                {property.amenities && property.amenities.length > 0 && (
+                  <div>
+                    <h3 className="text-xl font-semibold mb-3">Amenities</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {property.amenities.map((amenity, index) => (
+                        <div key={index} className="flex items-center gap-2 p-2">
+                          {getAmenityIcon(amenity.name || amenity)}
+                          <span className="text-gray-700">{amenity.name || amenity}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Categories */}
+                {property.categories && property.categories.length > 0 && (
+                  <>
+                    <Separator />
+                    <div>
+                      <h3 className="text-xl font-semibold mb-3">Categories</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {property.categories.map((category, index) => (
+                          <Badge key={index} variant="outline" className="text-sm">
+                            {category.name || category}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Column - Booking Card */}
+          <div className="lg:col-span-1">
+            <Card className="shadow-lg sticky top-8">
+              <CardHeader>
+                <CardTitle className="text-2xl">
+                  <span className="text-3xl font-bold">${property.currentDayPrice}</span>
+                  <span className="text-lg text-gray-600 font-normal"> / night</span>
+                </CardTitle>
+              </CardHeader>
+              
+              <CardContent className="space-y-4">
+                {/* Date Selection */}
+                <div className="grid grid-cols-2 gap-2">
                   <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !dates && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {dates?.length === 0 ? (
-                          <span>Pick your dates</span>
-                        ) : dates?.length === 1 ? (
-                          format(dates[0], "LLL dd, y")
-                        ) : dates?.length === 2 ? (
-                          <>
-                            {format(dates[0], "LLL dd, y")} - {format(dates[1], "LLL dd, y")}
-                          </>
-                        ) : (
-                          <span>Pick your dates</span>
-                        )}
-                      </Button>
+                    <PopoverTrigger>
+                      <div>
+                        <Button variant="outline" className="w-full justify-start text-left font-normal">
+                          <Calendar className="mr-2 h-4 w-4" />
+                          {checkInDate ? format(checkInDate, "PPP") : "Check-in"}
+                        </Button>
+                      </div>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
+                      <CalendarComponent
+                        mode="single"
+                        selected={checkInDate}
+                        onSelect={setCheckInDate}
+                        disabled={(date) => date < new Date()}
                         initialFocus
-                        mode="range"
-                        defaultMonth={new Date()}
-                        numberOfMonths={2}
-                        selected={dates}
-                        onSelect={setDates}
-                        className="rounded-md border"
+                      />
+                    </PopoverContent>
+                  </Popover>
+
+                  <Popover>
+                    <PopoverTrigger>
+                      <div>
+                        <Button variant="outline" className="w-full justify-start text-left font-normal">
+                          <Calendar className="mr-2 h-4 w-4" />
+                          {checkOutDate ? format(checkOutDate, "PPP") : "Check-out"}
+                        </Button>
+                      </div>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <CalendarComponent
+                        mode="single"
+                        selected={checkOutDate}
+                        onSelect={setCheckOutDate}
+                        disabled={(date) => date < (checkInDate || new Date())}
+                        initialFocus
                       />
                     </PopoverContent>
                   </Popover>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Guests</label>
-                  <div className="flex items-center gap-2 border rounded-lg p-2">
+
+                {/* Guests Selection */}
+                <div className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex items-center gap-2">
                     <Users className="w-4 h-4" />
-                    <span>Add guests</span>
+                    <span>Guests</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setGuests(Math.max(1, guests - 1))}
+                      disabled={guests <= 1}
+                    >
+                      -
+                    </Button>
+                    <span className="w-8 text-center">{guests}</span>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setGuests(Math.min(property.maxGuests, guests + 1))}
+                      disabled={guests >= property.maxGuests}
+                    >
+                      +
+                    </Button>
                   </div>
                 </div>
-              </div>
-              <Button className="w-full mb-4">Reserve now</Button>
-              <div className="space-y-4">
-                <div className="flex justify-between">
-                  <span>${property.currentDayPrice} × {dates?.length === 2 ? Math.ceil((dates[1].getTime() - dates[0].getTime()) / (1000 * 60 * 60 * 24)) : 1} night{dates?.length === 2 && Math.ceil((dates[1].getTime() - dates[0].getTime()) / (1000 * 60 * 60 * 24)) > 1 ? 's' : ''}</span>
-                  <span>${property.currentDayPrice * (dates?.length === 2 ? Math.ceil((dates[1].getTime() - dates[0].getTime()) / (1000 * 60 * 60 * 24)) : 1)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Service fee</span>
-                  <span>${property.serviceFee}</span>
-                </div>
-                <Separator />
-                <div className="flex justify-between font-bold">
-                  <span>Total</span>
-                  <span>${(property.currentDayPrice * (dates?.length === 2 ? Math.ceil((dates[1].getTime() - dates[0].getTime()) / (1000 * 60 * 60 * 24)) : 1)) + property.serviceFee}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+
+                {/* Price Breakdown */}
+                {checkInDate && checkOutDate && (
+                  <div className="space-y-2 p-4 bg-gray-50 rounded-lg">
+                    <div className="flex justify-between">
+                      <span>${property.currentDayPrice} × {nights} nights</span>
+                      <span>${totalPrice}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Service fee</span>
+                      <span>${property.serviceFee}</span>
+                    </div>
+                    <Separator />
+                    <div className="flex justify-between font-semibold text-lg">
+                      <span>Total</span>
+                      <span>${totalPrice + property.serviceFee}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Reserve Button */}
+                <Button 
+                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold text-lg"
+                  disabled={!checkInDate || !checkOutDate || guests > property.maxGuests || isBooking}
+                  onClick={handleBooking}
+                >
+                  {isBooking ? 'Processing...' : 'Reserve Now'}
+                </Button>
+
+                <p className="text-sm text-muted-foreground text-center">
+                  You won't be charged yet
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default PropertyDetail;
