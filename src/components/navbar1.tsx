@@ -103,28 +103,8 @@ const Navbar1 = ({
       ],
     },
     {
-      title: "Explore",
-      url: "#",
-      items: [
-        {
-          title: "Featured Properties",
-          description: "Discover our top-rated and most popular rentals",
-          icon: <Zap className="size-5 shrink-0" />,
-          url: "#",
-        },
-        {
-          title: "Search by Location",
-          description: "Find properties in your desired destination",
-          icon: <Sunset className="size-5 shrink-0" />,
-          url: "/search",
-        },
-        {
-          title: "Travel Guides",
-          description: "Explore destination guides and local recommendations",
-          icon: <Trees className="size-5 shrink-0" />,
-          url: "#",
-        },
-      ],
+      title: "My Bookings",
+      url: "/my-bookings",
     },
     {
       title: "Switch to Hosting",

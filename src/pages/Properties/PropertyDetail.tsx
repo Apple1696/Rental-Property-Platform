@@ -75,37 +75,28 @@ const PropertyDetail = () => {
   const handleBooking = async () => {
     if (!property || !checkInDate || !checkOutDate) return;
 
-    try {
-      setIsBooking(true);
-      const totalNights = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
-      const totalPrice = calculateTotalPrice();
-      const vat = totalPrice * 0.1; // Assuming 10% VAT
-      const subtotal = totalPrice + property.serviceFee;
-      const total = subtotal + vat;
+    const totalNights = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
+    const totalPrice = calculateTotalPrice();
+    const vat = totalPrice * 0.1; // Assuming 10% VAT
+    const subtotal = totalPrice + property.serviceFee;
+    const total = subtotal + vat;
 
-      const bookingData: BookingRequest = {
+    navigate(`/payment/${property.id}`, {
+      state: {
         propertyId: property.id,
-        checkInDate: format(checkInDate, 'dd-MM-yyyy'),
-        checkOutDate: format(checkOutDate, 'dd-MM-yyyy'),
-        guestsCount: guests,
-        totalNight: totalNights,
+        propertyImage: property.imageUrl,
+        propertyTitle: property.title,
+        checkInDate,
+        checkOutDate,
+        guests,
         pricePerNight: property.currentDayPrice,
-        vat: vat,
-        totalAmount: total,
+        serviceFee: property.serviceFee,
+        totalNights,
         subtotalAmount: subtotal,
-        specialRequests: '', // Could add a text field for this
-        paymentMethod: 'credit_card' // Could add payment method selection
-      };
-
-      const response = await PropertyService.createBooking(bookingData);
-      toast.success('Booking created successfully!');
-      navigate('/payment/success'); // Redirect to success page
-    } catch (error) {
-      console.error('Error creating booking:', error);
-      toast.error('Failed to create booking. Please try again.');
-    } finally {
-      setIsBooking(false);
-    }
+        vat,
+        totalAmount: total
+      }
+    });
   };
 
   if (loading) {

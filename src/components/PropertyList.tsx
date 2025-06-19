@@ -51,7 +51,7 @@ export default function PropertyList() {
             to={`/properties/${property.id}`}
             className="block transition-transform hover:scale-[1.02] hover:shadow-lg"
           >
-            <Card className="overflow-hidden h-full">
+            <Card className="overflow-hidden h-full p-0">
               <CardHeader className="p-0">
                 <AspectRatio ratio={16 / 9}>
                   {property.imageUrl ? (

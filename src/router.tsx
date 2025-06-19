@@ -18,7 +18,8 @@ import PropertyListing from './pages/Host/PropertyListing'
 import AddProperty from './pages/Host/AddProperty'
 import ViewDetail from './pages/Host/ViewDetail'
 import UpdateProperty from './pages/Host/UpdateProperty'
-import { PayosPaymentFlow } from './pages/Payment/Payment'
+import CheckOut from './pages/Payment/CheckOut'
+import MyBookingPage from './pages/MyBooking'
 
 export const router = createBrowserRouter([
   {
@@ -38,8 +39,12 @@ export const router = createBrowserRouter([
         element: <PropertyDetail/>
       },
       {
-        path: 'payment',
-        element: <PayosPaymentFlow/>
+        path: 'payment/:id',
+        element: <CheckOut/>
+      },
+      {
+        path: 'my-bookings',
+        element: <MyBookingPage/>
       }
     ]
   },

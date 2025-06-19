@@ -78,18 +78,42 @@ export interface BookingRequest {
   pricePerNight: number;
   vat: number;
   totalAmount: number;
-  subtotalAmount: number;
-  specialRequests: string;
+  subtotalAmount?: number | null;
+  specialRequests?: string | null;
   paymentMethod: string;
 }
 
 export interface BookingResponse {
   code: number;
   data: {
-    bookingId: string;
-    status: string;
-    // Add other booking response fields as needed
+    paymentUrl: string;
   };
+  message: string;
+}
+
+export interface MyBooking {
+  id: string;
+  propertyId: string;
+  checkInDate: string;
+  checkOutDate: string;
+  guestsCount: number;
+  totalNight: number;
+  pricePerNight: number;
+  vat: number;
+  subtotalAmount: number | null;
+  totalAmount: number;
+  expiresAt: string;
+  bookingStatus: string;
+  specialRequests: string | null;
+  paymentMethod: string | null;
+  paymentStatus: string | null;
+  paymentAmount: number | null;
+}
+
+export interface MyBookingsResponse {
+  code: number;
+  data: MyBooking[];
+  message: string;
 }
 
 class PropertyService {
@@ -148,6 +172,16 @@ class PropertyService {
       return response.data;
     } catch (error) {
       console.error('Error creating booking:', error);
+      throw error;
+    }
+  }
+
+  static async getMyBookings(): Promise<MyBooking[]> {
+    try {
+      const response = await api.get<MyBookingsResponse>('/booking-service/api/booking/my-bookings');
+      return response.data.data;
+    } catch (error) {
+      console.error('Error fetching my bookings:', error);
       throw error;
     }
   }
