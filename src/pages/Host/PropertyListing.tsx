@@ -82,7 +82,7 @@ const PropertyListing = () => {
         </div>
       ),
     },
-    {
+   {
       accessorKey: "currentDayPrice",
       header: ({ column }) => {
         return (
@@ -97,10 +97,7 @@ const PropertyListing = () => {
       },
       cell: ({ row }) => {
         const amount = parseFloat(row.getValue("currentDayPrice"))
-        const formatted = new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-        }).format(amount)
+        const formatted = amount.toLocaleString() + " VND"
  
         return formatted
       },

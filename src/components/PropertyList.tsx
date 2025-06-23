@@ -91,10 +91,10 @@ export default function PropertyList() {
               </CardContent>
               <CardFooter className="p-4 pt-0 flex justify-between items-center">
                 <div className="text-lg font-bold">
-                  ${property.currentDayPrice} <span className="text-sm font-normal">/ night</span>
+                  {property.currentDayPrice} VND <span className="text-sm font-normal">/ night</span>
                 </div>
                 <div className="text-sm text-gray-600">
-                  +${property.serviceFee} service fee
+                  +{property.serviceFee} VND service fee
                 </div>
               </CardFooter>
             </Card>

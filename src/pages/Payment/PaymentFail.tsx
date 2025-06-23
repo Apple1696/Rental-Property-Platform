@@ -1,10 +1,26 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { XCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
 
 const PaymentFail = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    // Get PayOS callback parameters
+    const code = searchParams.get('code');
+    const orderId = searchParams.get('id');
+    const status = searchParams.get('status');
+    const orderCode = searchParams.get('orderCode');
+
+    // If we have successful payment parameters, redirect to success page
+    if (code === '00' && orderId && status === 'PAID' && orderCode) {
+      navigate('/payment-success');
+      return;
+    }
+  }, [searchParams, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -28,11 +44,11 @@ const PaymentFail = () => {
             Try Again
           </Button>
           <Button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/my-bookings")}
             variant="outline"
             className="border-border hover:bg-accent hover:text-accent-foreground"
           >
-            Return Home
+            View My Bookings
           </Button>
         </CardContent>
       </Card>

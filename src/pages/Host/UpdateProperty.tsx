@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import PropertyService, { CreatePropertyRequest, DayPrice, Property } from '@/services/PropertyService';
+import PropertyService, { UpdatePropertyRequest, DayPrice } from '@/services/PropertyService';
 import { Toaster } from '@/components/ui/sonner';
 import { toast } from 'sonner';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
@@ -16,21 +16,29 @@ const propertyTypes = [
   { value: 'resort', label: 'Resort' },
 ];
 
+const roomTypes = [
+  { value: 'ENTIRE_PLACE', label: 'Entire Place' },
+  { value: 'PRIVATE_ROOM', label: 'Private Room' },
+  { value: 'SHARED_ROOM', label: 'Shared Room' },
+  { value: 'standard', label: 'Standard' },
+];
+
 const daysOfWeek = [
-  { value: 2, label: 'Monday' },
-  { value: 3, label: 'Tuesday' },
-  { value: 4, label: 'Wednesday' },
-  { value: 5, label: 'Thursday' },
-  { value: 6, label: 'Friday' },
-  { value: 7, label: 'Saturday' },
-  { value: 8, label: 'Sunday' },
+  { value: 1, label: 'Monday' },
+  { value: 2, label: 'Tuesday' },
+  { value: 3, label: 'Wednesday' },
+  { value: 4, label: 'Thursday' },
+  { value: 5, label: 'Friday' },
+  { value: 6, label: 'Saturday' },
+  { value: 7, label: 'Sunday' },
 ];
 
 const UpdateProperty = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
-  const [formData, setFormData] = useState<CreatePropertyRequest>({
+  const [formData, setFormData] = useState<UpdatePropertyRequest>({
+    id: id || '',
     hostId: '',
     title: '',
     description: '',
@@ -59,8 +67,9 @@ const UpdateProperty = () => {
       try {
         if (!id) return;
         const property = await PropertyService.getPropertyById(id);
-        // Transform the property data to match CreatePropertyRequest
+        // Transform the property data to match UpdatePropertyRequest
         setFormData({
+          id: property.id,
           hostId: property.hostId,
           title: property.title,
           description: property.description,
@@ -94,14 +103,18 @@ const UpdateProperty = () => {
     fetchPropertyDetails();
   }, [id, navigate]);
 
-  const handleInputChange = (field: keyof CreatePropertyRequest, value: any) => {
+  const handleInputChange = (field: keyof UpdatePropertyRequest, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleDayPriceAdd = () => {
+    // Find an unused day of week
+    const usedDays = formData.dayPrices.map(dp => dp.dayOfWeek);
+    const availableDay = daysOfWeek.find(day => !usedDays.includes(day.value))?.value || 1;
+    
     setFormData((prev) => ({
       ...prev,
-      dayPrices: [...prev.dayPrices, { dayOfWeek: 2, price: 0 }],
+      dayPrices: [...prev.dayPrices, { dayOfWeek: availableDay, price: 0 }],
     }));
   };
 
@@ -208,6 +221,25 @@ const UpdateProperty = () => {
               </SelectContent>
             </Select>
           </div>
+          
+          <div className="col-span-1">
+            <Label htmlFor="roomType">Room Type</Label>
+            <Select
+              value={formData.roomType}
+              onValueChange={(value) => handleInputChange('roomType', value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select room type" />
+              </SelectTrigger>
+              <SelectContent>
+                {roomTypes.map((type) => (
+                  <SelectItem key={type.value} value={type.value}>
+                    {type.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
           <div className="col-span-2">
             <div className="flex items-center justify-between mb-4">
@@ -218,6 +250,7 @@ const UpdateProperty = () => {
                 size="sm"
                 onClick={handleDayPriceAdd}
                 className="flex items-center gap-2"
+                disabled={formData.dayPrices.length >= 7}
               >
                 <Plus className="h-4 w-4" />
                 Add Day Price
@@ -234,7 +267,9 @@ const UpdateProperty = () => {
                       onValueChange={(value) => handleDayPriceChange(index, 'dayOfWeek', Number(value))}
                     >
                       <SelectTrigger>
-                        <SelectValue />
+                        <SelectValue>
+                          {daysOfWeek.find(day => day.value === dayPrice.dayOfWeek)?.label || 'Select day'}
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         {getAvailableDays(index).map((day) => (

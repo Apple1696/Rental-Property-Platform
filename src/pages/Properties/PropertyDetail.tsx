@@ -77,11 +77,12 @@ const PropertyDetail = () => {
 
     const totalNights = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
     const totalPrice = calculateTotalPrice();
-    const vat = totalPrice * 0.1; // Assuming 10% VAT
+    const vat = 10; // Assuming 10% VAT
     const subtotal = totalPrice + property.serviceFee;
-    const total = subtotal + vat;
+    const tax =subtotal*0.1;
+    const total = subtotal + tax;
 
-    navigate(`/payment/${property.id}`, {
+    navigate('/payment/checkout', {
       state: {
         propertyId: property.id,
         propertyImage: property.imageUrl,
@@ -94,7 +95,8 @@ const PropertyDetail = () => {
         totalNights,
         subtotalAmount: subtotal,
         vat,
-        totalAmount: total
+        totalAmount: total,
+        paymentMethod: 'PAYOS'
       }
     });
   };
@@ -280,7 +282,7 @@ const PropertyDetail = () => {
             <Card className="shadow-lg sticky top-8">
               <CardHeader>
                 <CardTitle className="text-2xl">
-                  <span className="text-3xl font-bold">${property.currentDayPrice}</span>
+                  <span className="text-3xl font-bold">{property.currentDayPrice} VND</span>
                   <span className="text-lg text-gray-600 font-normal"> / night</span>
                 </CardTitle>
               </CardHeader>
@@ -360,17 +362,17 @@ const PropertyDetail = () => {
                 {checkInDate && checkOutDate && (
                   <div className="space-y-2 p-4 bg-gray-50 rounded-lg">
                     <div className="flex justify-between">
-                      <span>${property.currentDayPrice} × {nights} nights</span>
-                      <span>${totalPrice}</span>
+                      <span>{property.currentDayPrice} VND × {nights} nights</span>
+                      <span>{totalPrice} VND</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Service fee</span>
-                      <span>${property.serviceFee}</span>
+                      <span>{property.serviceFee} VND</span>
                     </div>
                     <Separator />
                     <div className="flex justify-between font-semibold text-lg">
                       <span>Total</span>
-                      <span>${totalPrice + property.serviceFee}</span>
+                      <span>{totalPrice + property.serviceFee} VND</span>
                     </div>
                   </div>
                 )}

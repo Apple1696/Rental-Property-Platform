@@ -69,6 +69,9 @@ export interface CreatePropertyRequest {
   imageUrl: string;
 }
 
+export interface UpdatePropertyRequest extends CreatePropertyRequest {
+  id: string;
+}
 export interface BookingRequest {
   propertyId: string;
   checkInDate: string;
@@ -150,18 +153,18 @@ class PropertyService {
     }
   }
 
-  static async updateProperty(propertyData: CreatePropertyRequest): Promise<Property> {
-    try {
-      const response = await api.put<{code: number; data: Property}>(
-        '/booking-service/api/property/update',
-        propertyData
-      );
-      return response.data.data;
-    } catch (error) {
-      console.error('Error updating property:', error);
-      throw error;
-    }
+static async updateProperty(propertyData: UpdatePropertyRequest): Promise<Property> {
+  try {
+    const response = await api.post<{code: number; data: Property}>(
+      '/booking-service/api/property/update',
+      propertyData
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error('Error updating property:', error);
+    throw error;
   }
+}
 
   static async createBooking(bookingData: BookingRequest): Promise<BookingResponse> {
     try {

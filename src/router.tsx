@@ -88,11 +88,11 @@ export const router = createBrowserRouter([
   },
   {
     path: 'payment-success',
-    element: <PaymentSuccess/>
+    element: <PaymentSuccess/>,
   },
   {
     path: 'payment-failed',
-    element: <PaymentFail/>
+    element: <PaymentFail/>,
   },
   {
     path: 'register-success',

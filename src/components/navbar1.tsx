@@ -72,36 +72,36 @@ const Navbar1 = ({
   menu = [
     { title: "Home", url: "/" },
     { title: "Properties", url: "/properties" },
-    {
-      title: "List Your Property",
-      url: "#",
-      items: [
-        {
-          title: "How it Works",
-          description: "Learn about the process of listing your property on our platform",
-          icon: <Book className="size-5 shrink-0" />,
-          url: "#",
-        },
-        {
-          title: "Hosting Guidelines",
-          description: "Essential information and requirements for property hosts",
-          icon: <Trees className="size-5 shrink-0" />,
-          url: "#",
-        },
-        {
-          title: "Pricing & Fees",
-          description: "Understand our pricing structure and commission rates",
-          icon: <Sunset className="size-5 shrink-0" />,
-          url: "#",
-        },
-        {
-          title: "Host Resources",
-          description: "Access tools and guides to help you succeed as a host",
-          icon: <Zap className="size-5 shrink-0" />,
-          url: "#",
-        },
-      ],
-    },
+    // {
+    //   title: "List Your Property",
+    //   url: "#",
+    //   items: [
+    //     {
+    //       title: "How it Works",
+    //       description: "Learn about the process of listing your property on our platform",
+    //       icon: <Book className="size-5 shrink-0" />,
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Hosting Guidelines",
+    //       description: "Essential information and requirements for property hosts",
+    //       icon: <Trees className="size-5 shrink-0" />,
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Pricing & Fees",
+    //       description: "Understand our pricing structure and commission rates",
+    //       icon: <Sunset className="size-5 shrink-0" />,
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Host Resources",
+    //       description: "Access tools and guides to help you succeed as a host",
+    //       icon: <Zap className="size-5 shrink-0" />,
+    //       url: "#",
+    //     },
+    //   ],
+    // },
     {
       title: "My Bookings",
       url: "/my-bookings",
@@ -159,43 +159,39 @@ const Navbar1 = ({
     navigate('/login');
   };
 
-  const renderAuthButtons = () => {
-    if (isAuthenticated) {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative size-8 rounded-full ring-0 focus:ring-0 focus:ring-offset-0">
-              <Avatar className="h-8 w-8 cursor-pointer">
-                <AvatarFallback>{userInitials}</AvatarFallback>
-              </Avatar>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent sideOffset={5} align="end" className="w-56 z-50">
-            <DropdownMenuItem className="cursor-pointer" onClick={() => navigate('/profile')}>
-              <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    }
 
+const renderAuthButtons = () => {
+  if (isAuthenticated) {
     return (
-      <>
-        <Button asChild variant="outline" size="sm" className="bg-white/10 text-white border-white/20 hover:bg-white/20">
-          <a href={auth.login.url}>{auth.login.title}</a>
+      <div className="flex items-center gap-2">
+        <Avatar className="h-8 w-8">
+          <AvatarFallback>{userInitials}</AvatarFallback>
+        </Avatar>
+        <Button 
+          variant="ghost" 
+          size="icon"
+          onClick={handleLogout}
+          className="h-8 w-8 rounded-full p-0 text-white hover:bg-white/10"
+          title="Logout"
+        >
+          <LogOut className="h-4 w-4" />
+          <span className="sr-only">Logout</span>
         </Button>
-        <Button asChild size="sm" className="bg-white text-[#B03F4A] hover:bg-white/90">
-          <a href={auth.signup.url}>{auth.signup.title}</a>
-        </Button>
-      </>
+      </div>
     );
-  };
+  }
+
+  return (
+    <>
+      <Button asChild variant="outline" size="sm" className="bg-white/10 text-white border-white/20 hover:bg-white/20">
+        <a href={auth.login.url}>{auth.login.title}</a>
+      </Button>
+      <Button asChild size="sm" className="bg-white text-[#B03F4A] hover:bg-white/90">
+        <a href={auth.signup.url}>{auth.signup.title}</a>
+      </Button>
+    </>
+  );
+};
 
   return (
     <section className="py-4" style={{ backgroundColor: '#B03F4A' }}>
