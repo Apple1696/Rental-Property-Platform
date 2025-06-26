@@ -23,6 +23,7 @@ interface CheckoutProps {
   subtotalAmount: number;
   vat: number;
   totalAmount: number;
+  paymentMethod: string;
 }
 
 const CheckOut = () => {
@@ -30,11 +31,31 @@ const CheckOut = () => {
   const navigate = useNavigate();
   const bookingDetails = location.state as CheckoutProps;
   const [isProcessing, setIsProcessing] = useState(false);
-  const [selectedMethod, setSelectedMethod] = useState('card');
+  const [selectedMethod, setSelectedMethod] = useState(bookingDetails?.paymentMethod || 'PAYOS');
 
-  const handlePayment = async (method: string) => {
-    if (!bookingDetails) return;
+  // Check if we have the required data and token
+  const token = localStorage.getItem('token');
+  
+  if (!token) {
+    navigate('/login', { state: { from: location } });
+    return null;
+  }
 
+  if (!bookingDetails) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Invalid checkout session</h2>
+          <p className="text-gray-600 mb-4">Please start your booking process again.</p>
+          <Button onClick={() => navigate('/properties')}>
+            Browse Properties
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const handlePayment = async () => {
     try {
       setIsProcessing(true);
 
@@ -49,7 +70,7 @@ const CheckOut = () => {
         totalAmount: bookingDetails.totalAmount,
         subtotalAmount: bookingDetails.subtotalAmount || null,
         specialRequests: null,
-        paymentMethod: 'PAYOS'
+        paymentMethod: selectedMethod
       };
 
       const response = await PropertyService.createBooking(bookingData);
@@ -68,20 +89,6 @@ const CheckOut = () => {
     }
   };
 
-  if (!bookingDetails) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Invalid checkout session</h2>
-          <p className="text-gray-600 mb-4">Please start your booking process again.</p>
-          <Button onClick={() => navigate('/properties')}>
-            Browse Properties
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen container mx-auto py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-2">
@@ -94,31 +101,19 @@ const CheckOut = () => {
               </CardHeader>
               <CardContent>
                 <RadioGroup 
-                  defaultValue="card" 
+                  defaultValue={selectedMethod}
                   className="space-y-4"
                   value={selectedMethod}
                   onValueChange={setSelectedMethod}
                 >
                   <div className="flex items-center space-x-4 rounded-lg border p-4 cursor-pointer hover:bg-accent">
-                    <RadioGroupItem value="card" id="card" />
-                    <Label htmlFor="card" className="flex-1 cursor-pointer">
+                    <RadioGroupItem value="PAYOS" id="payos" />
+                    <Label htmlFor="payos" className="flex-1 cursor-pointer">
                       <div className="flex items-center gap-2">
                         <CreditCard className="h-5 w-5 text-primary" />
                         <div>
-                          <p className="font-medium">Credit/Debit Card</p>
-                          <p className="text-sm text-muted-foreground">Pay securely with your card</p>
-                        </div>
-                      </div>
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-4 rounded-lg border p-4 cursor-pointer hover:bg-accent">
-                    <RadioGroupItem value="ewallet" id="ewallet" />
-                    <Label htmlFor="ewallet" className="flex-1 cursor-pointer">
-                      <div className="flex items-center gap-2">
-                        <Wallet className="h-5 w-5 text-primary" />
-                        <div>
-                          <p className="font-medium">E-Wallet</p>
-                          <p className="text-sm text-muted-foreground">Pay with your preferred e-wallet</p>
+                          <p className="font-medium">PayOS</p>
+                          <p className="text-sm text-muted-foreground">Pay securely with PayOS</p>
                         </div>
                       </div>
                     </Label>
@@ -127,7 +122,7 @@ const CheckOut = () => {
 
                 <Button 
                   className="w-full mt-6 bg-primary text-primary-foreground hover:bg-primary/90"
-                  onClick={() => handlePayment(selectedMethod)}
+                  onClick={handlePayment}
                   disabled={isProcessing}
                 >
                   {isProcessing ? (
@@ -197,22 +192,22 @@ const CheckOut = () => {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-gray-600">
-                      ${bookingDetails.pricePerNight} × {bookingDetails.totalNights} nights
+                      {bookingDetails.pricePerNight} × {bookingDetails.totalNights} VND nights
                     </span>
-                    <span>${bookingDetails.pricePerNight * bookingDetails.totalNights}</span>
+                    <span>{bookingDetails.pricePerNight * bookingDetails.totalNights} VND</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Service fee</span>
-                    <span>${bookingDetails.serviceFee}</span>
+                    <span>{bookingDetails.serviceFee} VND</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">VAT</span>
-                    <span>${bookingDetails.vat}</span>
+                    <span>{bookingDetails.vat}%</span>
                   </div>
                   <Separator />
                   <div className="flex justify-between font-semibold text-lg">
                     <span>Total</span>
-                    <span>${bookingDetails.totalAmount}</span>
+                    <span>{bookingDetails.totalAmount} VND</span>
                   </div>
                 </div>
               </CardContent>

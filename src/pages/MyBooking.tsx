@@ -108,15 +108,15 @@ const BookingCard = ({ booking }: { booking: MyBooking }) => {
         <div className="mt-4 border-t pt-4">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Subtotal</span>
-            <span>${booking.subtotalAmount || (booking.pricePerNight * booking.totalNight)}</span>
+            <span>{booking.subtotalAmount || (booking.pricePerNight * booking.totalNight)} VND</span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">VAT ({booking.vat}%)</span>
-            <span>${(booking.totalAmount - (booking.subtotalAmount || 0)).toFixed(2)}</span>
+            <span>{(booking.totalAmount - (booking.subtotalAmount || 0)).toFixed(2)} VND</span>
           </div>
           <div className="mt-2 flex justify-between font-medium">
             <span>Total</span>
-            <span>${booking.totalAmount}</span>
+            <span>{booking.totalAmount} VND</span>
           </div>
         </div>
       </CardContent>
