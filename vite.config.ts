@@ -18,45 +18,8 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      port: 8050,
-      proxy: {
-        // Match any request starting with /user-service
-        '^/user-service/.*': {
-          target: apiTarget,
-          changeOrigin: true,
-          secure: false,
-          logLevel: 'debug', // This will show proxy logs
-          configure: (proxy, options) => {
-            proxy.on('error', (err, req, res) => {
-              console.log('❌ Proxy error:', err.message);
-            });
-            proxy.on('proxyReq', (proxyReq, req, res) => {
-              console.log(`🔄 Proxying: ${req.method} ${req.url} -> ${options.target}${req.url}`);
-            });
-            proxy.on('proxyRes', (proxyRes, req, res) => {
-              console.log(`✅ Proxy response: ${proxyRes.statusCode} for ${req.url}`);
-            });
-          }
-        },
-        // Match any request starting with /booking-service
-        '^/booking-service/.*': {
-          target: apiTarget,
-          changeOrigin: true,
-          secure: false,
-          logLevel: 'debug',
-          configure: (proxy, options) => {
-            proxy.on('error', (err, req, res) => {
-              console.log('❌ Proxy error:', err.message);
-            });
-            proxy.on('proxyReq', (proxyReq, req, res) => {
-              console.log(`🔄 Proxying: ${req.method} ${req.url} -> ${options.target}${req.url}`);
-            });
-            proxy.on('proxyRes', (proxyRes, req, res) => {
-              console.log(`✅ Proxy response: ${proxyRes.statusCode} for ${req.url}`);
-            });
-          }
-        }
-      }
+      port: 8050
+    
     },
     define: {
       __APP_ENV__: JSON.stringify(env.APP_ENV),

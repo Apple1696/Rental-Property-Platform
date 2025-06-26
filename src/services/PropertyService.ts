@@ -132,7 +132,7 @@ class PropertyService {
 
   static async getPropertyById(id: string): Promise<Property> {
     try {
-      const response = await api.get<{code: number; data: Property}>(`/booking-service/api/property/${id}`);
+      const response = await api.get<{ code: number; data: Property }>(`/booking-service/api/property/${id}`);
       return response.data.data;
     } catch (error) {
       console.error(`Error fetching property with id ${id}:`, error);
@@ -142,7 +142,7 @@ class PropertyService {
 
   static async addProperty(propertyData: CreatePropertyRequest): Promise<Property> {
     try {
-      const response = await api.post<{code: number; data: Property}>(
+      const response = await api.post<{ code: number; data: Property }>(
         '/booking-service/api/property/add',
         propertyData
       );
@@ -153,18 +153,18 @@ class PropertyService {
     }
   }
 
-static async updateProperty(propertyData: UpdatePropertyRequest): Promise<Property> {
-  try {
-    const response = await api.post<{code: number; data: Property}>(
-      '/booking-service/api/property/update',
-      propertyData
-    );
-    return response.data.data;
-  } catch (error) {
-    console.error('Error updating property:', error);
-    throw error;
+  static async updateProperty(propertyData: UpdatePropertyRequest): Promise<Property> {
+    try {
+      const response = await api.post<{ code: number; data: Property }>(
+        '/booking-service/api/property/update',
+        propertyData
+      );
+      return response.data.data;
+    } catch (error) {
+      console.error('Error updating property:', error);
+      throw error;
+    }
   }
-}
 
   static async createBooking(bookingData: BookingRequest): Promise<BookingResponse> {
     try {
