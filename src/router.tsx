@@ -6,7 +6,7 @@ import LoginPage from './pages/Login/Login'
 import Properties from './pages/Properties/Properties'
 import PropertyDetail from './pages/Properties/PropertyDetail'
 // import ProtectedRoute from '@/components/ProtectedRoute'
-import Dashboard from './pages/Dashboard/page'
+import Dashboard from './pages/Dashboard/Dashboard'
 import { ForgotPasswordForm } from './components/login/forgot-password'
 import { ResetPasswordForm } from './components/login/reset-password'
 import PaymentSuccess from './pages/Payment/PaymentSuccess'
@@ -45,7 +45,8 @@ export const router = createBrowserRouter([
       {
         path: 'my-bookings',
         element: <MyBookingPage/>
-      }
+      },
+     
     ]
   },
   {
@@ -102,5 +103,9 @@ export const router = createBrowserRouter([
   {
     path: 'user/confirm',
     element: <EmailConfirmation/>
-  }
+  },
+   {
+        path: 'admin/dashboard',
+        element: <Dashboard />
+      }
 ]) 

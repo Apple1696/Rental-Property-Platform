@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { authService } from "@/services/authentication"
+import { authService } from "@/services/Authentication"
 
 interface SignupFormProps extends React.ComponentPropsWithoutRef<"form"> {
   onSwitchToLogin?: () => void

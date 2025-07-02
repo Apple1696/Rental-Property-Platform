@@ -10,6 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 import PropertyService, { Property, BookingRequest } from '../../services/PropertyService';
+import ReviewSection from '@/components/ReviewSection';
 
 const PropertyDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -275,6 +276,8 @@ const PropertyDetail = () => {
                 )}
               </CardContent>
             </Card>
+             {/* Review Section - Add this below the property details card */}
+            {id && <ReviewSection propertyId={id} />}
           </div>
 
           {/* Right Column - Booking Card */}

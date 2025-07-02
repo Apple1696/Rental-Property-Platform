@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { authService } from "@/services/authentication"
+import { authService } from "@/services/Authentication"
 
 interface LoginFormProps extends React.ComponentPropsWithoutRef<"form"> {
   onSwitchToSignup?: () => void
@@ -18,6 +18,7 @@ export function LoginForm({ className, onSwitchToSignup, ...props }: LoginFormPr
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -25,8 +26,15 @@ export function LoginForm({ className, onSwitchToSignup, ...props }: LoginFormPr
 
     try {
       await authService.login({ email, password });
-      // Only redirect if login was successful
-      window.location.href = '/';
+      
+      // Get user role and redirect based on role
+      const userRole = authService.getUserRole();
+      
+      if (userRole === "ADMIN") {
+        window.location.href = '/admin/dashboard';
+      } else {
+        window.location.href = '/';
+      }
     } catch (err: any) {
       console.error("Error:", err);
       // Display the specific error message from the auth service
@@ -38,16 +46,7 @@ export function LoginForm({ className, onSwitchToSignup, ...props }: LoginFormPr
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      // TODO: Implement your Google sign in logic here
-      console.log('Google sign in attempted');
-    } catch (err) {
-      console.error("Error:", err);
-      setError("An error occurred with Google sign in.");
-    }
-  };
-
+ 
   return (
     <form onSubmit={handleSubmit} className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
@@ -89,10 +88,10 @@ export function LoginForm({ className, onSwitchToSignup, ...props }: LoginFormPr
         <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? "Signing in..." : "Login"}
         </Button>
-        <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+        {/* <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
           <span className="relative z-10 bg-background px-2 text-muted-foreground">Or continue with</span>
-        </div>
-        <Button 
+        </div> */}
+        {/* <Button 
           type="button"
           variant="outline" 
           className="w-full"
@@ -118,7 +117,7 @@ export function LoginForm({ className, onSwitchToSignup, ...props }: LoginFormPr
             />
           </svg>
           Continue with Google
-        </Button>
+        </Button> */}
       </div>
 
       <div className="text-center text-sm">

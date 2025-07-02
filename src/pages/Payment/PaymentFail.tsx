@@ -1,57 +1,65 @@
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { ArrowLeft, XCircle, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { XCircle } from "lucide-react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useEffect } from "react";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 const PaymentFail = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-
-  useEffect(() => {
-    // Get PayOS callback parameters
-    const code = searchParams.get('code');
-    const orderId = searchParams.get('id');
-    const status = searchParams.get('status');
-    const orderCode = searchParams.get('orderCode');
-
-    // If we have successful payment parameters, redirect to success page
-    if (code === '00' && orderId && status === 'PAID' && orderCode) {
-      navigate('/payment-success');
-      return;
-    }
-  }, [searchParams, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <XCircle className="h-16 w-16 text-destructive" />
-          </div>
-          <CardTitle className="text-2xl font-bold text-foreground">
-            Payment Failed
-          </CardTitle>
-          <CardDescription className="text-muted-foreground">
-            We're sorry, but your payment could not be processed. Please try again or contact support if the problem persists.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex justify-center gap-4">
-          <Button
-            onClick={() => navigate(-1)}
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
-          >
-            Try Again
-          </Button>
-          <Button
-            onClick={() => navigate("/my-bookings")}
-            variant="outline"
-            className="border-border hover:bg-accent hover:text-accent-foreground"
-          >
-            View My Bookings
-          </Button>
-        </CardContent>
-      </Card>
+    <div className="container max-w-lg mx-auto py-16 px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex flex-col items-center"
+      >
+        <Card className="w-full border-2 border-destructive/20 shadow-lg">
+          <CardHeader className="text-center pb-6">
+            <motion.div 
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, type: "spring" }}
+              className="flex justify-center mb-6"
+            >
+              <XCircle className="h-20 w-20 text-destructive" />
+            </motion.div>
+            <CardTitle className="text-3xl font-bold text-destructive">
+              Payment Failed
+            </CardTitle>
+            <CardDescription className="text-lg mt-3">
+              Your payment could not be processed
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent className="text-center">
+            <p className="text-muted-foreground mb-4">
+              We encountered an issue with your payment. Please try again or use a different payment method.
+            </p>
+          </CardContent>
+
+          <CardFooter className="flex flex-col gap-4 items-center">
+            {/* <Button 
+              size="lg"
+              className="w-full sm:w-auto px-8"
+              onClick={() => navigate("/checkout")}
+            >
+              <RefreshCcw className="mr-2 h-4 w-4" />
+              Try again
+            </Button> */}
+            
+            <Button 
+              variant="ghost" 
+              className="flex items-center gap-2"
+              onClick={() => navigate("/")}
+            >
+              <ArrowLeft size={16} />
+              Return to home
+            </Button>
+          </CardFooter>
+        </Card>
+      </motion.div>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import api from "@/config/api";
 
-interface LoginRequest{
+interface LoginRequest {
     email: string;
     password: string;
 }
@@ -16,11 +16,12 @@ interface LoginResponse {
         dateOfBirth: string | null;
         gender: string | null;
         token: string;
+        role: string;
     };
     message: string;
 }
 
-interface SignupRequest{
+interface SignupRequest {
     firstName: string;
     lastName: string;
     email: string;
@@ -69,7 +70,7 @@ export const authService = {
             console.log('Attempting login with:', { email: request.email });
             const response = await api.post<LoginResponse>('/user-service/api/auth/login', request);
             console.log('Login response:', response.data);
-                
+
             // Check if we have a valid response structure
             if (!response.data.data || !response.data.data.token) {
                 console.error('Invalid response structure:', response.data);
@@ -78,13 +79,14 @@ export const authService = {
 
             // Store the token in localStorage
             localStorage.setItem('token', response.data.data.token);
-            
+
             // Store user data if needed
             localStorage.setItem('user', JSON.stringify({
                 name: response.data.data.name,
-                email: response.data.data.email
+                email: response.data.data.email,
+                role: response.data.data.role
             }));
-            
+
             dispatchAuthEvent();
             return response.data;
         } catch (error: any) {
@@ -92,7 +94,7 @@ export const authService = {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             dispatchAuthEvent();
-            
+
             // Add detailed error logging
             console.error('Login error details:', {
                 message: error.message,
@@ -100,7 +102,7 @@ export const authService = {
                 status: error.response?.status,
                 config: error.config
             });
-            
+
             // Rethrow the error with a more specific message
             if (error.response?.status === 401) {
                 throw new Error('Invalid email or password');
@@ -120,13 +122,13 @@ export const authService = {
     confirmEmail: async (token: string) => {
         try {
             const response = await api.get<EmailConfirmationResponse>(`/user-service/api/user/confirm?token=${token}`);
-            
+
             if (response.data.success && response.data.token) {
                 // Store the token in localStorage if provided
                 localStorage.setItem('token', response.data.token);
                 dispatchAuthEvent();
             }
-            
+
             return response.data;
         } catch (error: any) {
             const errorMessage = error.response?.data?.message || error.message || 'Email confirmation failed';
@@ -137,6 +139,19 @@ export const authService = {
     logout: () => {
         localStorage.removeItem('token');
         dispatchAuthEvent();
+    },
+
+      getUserRole: (): string | null => {
+        const userData = localStorage.getItem('user');
+        if (!userData) return null;
+        
+        try {
+            const user = JSON.parse(userData);
+            return user.role || null;
+        } catch (error) {
+            console.error('Failed to parse user data:', error);
+            return null;
+        }
     },
 
     isAuthenticated: () => {

@@ -11,6 +11,7 @@ import {
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import PropertyService, { Property } from '@/services/PropertyService';
 import { Bed, Bath, Users } from 'lucide-react';
+import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 
 export default function PropertyList() {
   const [properties, setProperties] = useState<Property[]>([]);

@@ -15,7 +15,7 @@ export const getCampaigns = async (): Promise<Campaign[]> => {
   try {
     const response = await axios.get<Campaign[]>(API_URL);
     // Sort campaigns by start_date in descending order (most recent first)
-    const sortedCampaigns = response.data.sort((a: Campaign, b: Campaign) => 
+    const sortedCampaigns = response.data.sort((a: Campaign, b: Campaign) =>
       new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
     );
     // Return only the 5 most recent campaigns

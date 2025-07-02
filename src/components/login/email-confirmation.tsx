@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
-import { authService } from "@/services/authentication"
+import { authService } from "@/services/Authentication"
 import { Button } from "@/components/ui/button"
 
 export function EmailConfirmation() {
