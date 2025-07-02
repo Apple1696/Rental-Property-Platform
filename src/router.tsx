@@ -20,6 +20,8 @@ import ViewDetail from './pages/Host/ViewDetail'
 import UpdateProperty from './pages/Host/UpdateProperty'
 import CheckOut from './pages/Payment/CheckOut'
 import MyBookingPage from './pages/MyBooking'
+import FinancePage from './pages/Dashboard/Finance/FinancePage'
+import ReviewsPage from './pages/Dashboard/Reviews/ReviewsPage'
 
 export const router = createBrowserRouter([
   {
@@ -107,5 +109,13 @@ export const router = createBrowserRouter([
    {
         path: 'admin/dashboard',
         element: <Dashboard />
-      }
+      },
+      {
+        path: 'admin/finance',
+        element: <FinancePage />
+      },
+         {
+        path: 'admin/reviews',
+        element: <ReviewsPage />
+      },
 ]) 

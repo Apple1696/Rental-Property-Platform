@@ -72,11 +72,11 @@ export function SectionCards() {
   }, []);
 
   // Function to format currency
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', { 
+   const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('vi-VN', { 
       style: 'currency', 
       currency: 'VND',
-      minimumFractionDigits: 2
+      maximumFractionDigits: 0 // Vietnamese Dong typically doesn't use decimal places
     }).format(amount);
   };
 

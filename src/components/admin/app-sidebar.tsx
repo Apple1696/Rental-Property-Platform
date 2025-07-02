@@ -1,5 +1,5 @@
 import * as React from "react"
-import { CalendarDays, ChevronDown, ChevronRight, GalleryVerticalEnd, Home, LayoutDashboard, LogOut, Settings, Star, Users } from "lucide-react"
+import { CalendarDays, ChevronDown, ChevronRight, GalleryVerticalEnd, Home, LayoutDashboard,BadgeDollarSign, LogOut, Settings, Star, Users } from "lucide-react"
 import {
   Collapsible,
   CollapsibleContent,
@@ -38,20 +38,21 @@ const data = {
       url: "/admin/properties",
       icon: "Home"
     },
-    {
-      title: "Bookings",
-      url: "/admin/bookings",
-      icon: "CalendarDays"
-    },
-       {
+     {
       title: "Finance",
-      icon: "Star",
+      icon: "CalendarDays",
       url: "/admin/finance",
     },
+    {
+      title: "Reviews",
+      url: "/admin/reviews",
+      icon: "Star"
+    },
+
   ],
   // Collapsible sections
   collapsibleSections: [
-    
+
     {
       title: "Users",
       icon: "Users",
@@ -66,7 +67,7 @@ const data = {
         }
       ]
     },
- 
+
     {
       title: "Settings",
       icon: "Settings",
@@ -102,7 +103,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     }
   };
 
-   // Handle logout function
+  // Handle logout function
   const handleLogout = () => {
     authService.logout();
     window.location.href = '/login'; // Redirect to login page after logout
@@ -142,7 +143,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             ))}
           </SidebarMenu>
         </SidebarGroup>
-        
+
         {/* Separator between regular and collapsible items */}
         <div className="my-2 border-t border-border" />
 
@@ -161,7 +162,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       <ChevronRight className="ml-auto size-4 transition-transform group-data-[state=open]/collapsible:rotate-90" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
-                  
+
                   <CollapsibleContent>
                     <SidebarMenuSub>
                       {section.items.map((item) => (
@@ -179,10 +180,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
-       <SidebarFooter className="p-4">
-        <Button 
-          variant="outline" 
-          className="w-full justify-start gap-2" 
+      <SidebarFooter className="p-4">
+        <Button
+          variant="outline"
+          className="w-full justify-start gap-2"
           onClick={handleLogout}
         >
           <LogOut className="size-4" />
