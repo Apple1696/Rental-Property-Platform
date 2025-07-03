@@ -4,6 +4,7 @@ import { ReviewCards } from './ReviewCards';
 import ReviewTable from './ReviewTable';
 import DashboardService from '@/services/DashboardService';
 import ReviewService from '@/services/ReviewService';
+import ReviewChart from './ReviewChart';
 
 export default function ReviewsPage() {
   const [dashboardData, setDashboardData] = useState<any>(null);
@@ -69,7 +70,10 @@ export default function ReviewsPage() {
             newReviewsToday={reviewStats.newReviewsToday}
             newReviewsWeek={reviewStats.newReviewsWeek}
           />
-          
+          {/* Review Rating Distribution Chart */}
+          <section className="mt-6">
+            <ReviewChart />
+          </section>
           {/* Review Management section with ReviewTable */}
           <section className="mt-6">
             <h2 className="mb-4 text-xl font-semibold">Review Management</h2>
