@@ -121,7 +121,7 @@ export function OverviewCards({
                 "h-2 mt-2",
                 pendingPaymentsPercentage > 30 ? "bg-destructive/20" : ""
               )}
-              indicatorClassName={pendingPaymentsPercentage > 30 ? "bg-destructive" : ""}
+              // Apply styles to the indicator using CSS variables or check Progress component API
             />
             <p className={cn(
               "text-xs mt-1",
@@ -162,9 +162,9 @@ export function OverviewCards({
             </div>
             <Progress 
               value={paymentSuccessRate} 
-              className="h-2 mt-2"
-              indicatorClassName={cn(
-                isSuccessRateConcerning ? "bg-destructive" : "bg-primary"
+              className={cn(
+                "h-2 mt-2",
+                isSuccessRateConcerning ? "data-[value]:bg-destructive" : "data-[value]:bg-primary"
               )}
             />
             <p className="text-xs text-muted-foreground mt-1">

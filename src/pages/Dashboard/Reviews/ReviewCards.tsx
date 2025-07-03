@@ -106,11 +106,11 @@ export function ReviewCards({
             </div>
             <Progress 
               value={averageRating * 20} 
-              className="h-2 mt-2"
-              indicatorClassName={cn(
-                averageRating >= 4 ? "bg-[var(--color-chart-1)]" : 
-                averageRating >= 3 ? "bg-[var(--color-chart-4)]" : 
-                "bg-destructive"
+              className={cn(
+                "h-2 mt-2",
+                "[&>div]:bg-[var(--color-chart-1)]",
+                averageRating < 4 && averageRating >= 3 && "[&>div]:bg-[var(--color-chart-4)]",
+                averageRating < 3 && "[&>div]:bg-destructive"
               )}
             />
             <p className="text-xs text-muted-foreground mt-1">
@@ -138,7 +138,7 @@ export function ReviewCards({
                   {formatNumber(approvedReviews)}
                 </Badge>
               </div>
-              <Progress value={approvedPercentage} className="h-1.5" indicatorClassName="bg-[var(--color-chart-1)]" />
+              <Progress value={approvedPercentage} className="h-1.5 [&>div]:bg-[var(--color-chart-1)]" />
               
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
@@ -149,7 +149,7 @@ export function ReviewCards({
                   {formatNumber(pendingReviews)}
                 </Badge>
               </div>
-              <Progress value={pendingPercentage} className="h-1.5" indicatorClassName="bg-[var(--color-chart-4)]" />
+              <Progress value={pendingPercentage} className="h-1.5 [&>div]:bg-[var(--color-chart-4)]" />
               
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
@@ -160,7 +160,7 @@ export function ReviewCards({
                   {formatNumber(flaggedReviews)}
                 </Badge>
               </div>
-              <Progress value={flaggedPercentage} className="h-1.5" indicatorClassName="bg-destructive" />
+              <Progress value={flaggedPercentage} className="h-1.5 [&>div]:bg-destructive" />
             </div>
           </div>
         </CardContent>

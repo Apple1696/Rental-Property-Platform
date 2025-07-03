@@ -91,10 +91,10 @@ export function PaymentStatus({
             <Progress 
               value={completionRate} 
               className="h-2"
-              indicatorClassName={cn(
-                completionRate < 70 ? "bg-destructive" : 
-                completionRate < 90 ? "bg-[var(--color-chart-4)]" : "bg-[var(--color-chart-1)]"
-              )}
+              color={
+                completionRate < 70 ? "destructive" : 
+                completionRate < 90 ? "var(--color-chart-4)" : "var(--color-chart-1)"
+              }
             />
           </div>
           

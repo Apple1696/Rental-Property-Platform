@@ -33,9 +33,9 @@ export default function ReviewsPage() {
         const data = await DashboardService.getDashboardData(fromDate, toDate);
         setDashboardData(data);
         
-        // Fetch reviews count using ReviewService
-        const count = await ReviewService.getReviewsCount({ fromDate, toDate });
-        setReviewsCount(count);
+// Fetch reviews count using ReviewService
+const count = await ReviewService.getReviewsCount(fromDate, toDate);
+setReviewsCount(count);
       } catch (error) {
         console.error(error);
       } finally {

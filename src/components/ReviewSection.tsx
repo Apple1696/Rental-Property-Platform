@@ -21,6 +21,8 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ propertyId }) => {
   const [hoverRating, setHoverRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+
+
   useEffect(() => {
     const fetchReviews = async () => {
       try {
@@ -56,8 +58,8 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ propertyId }) => {
         comment,
         rating
       };
-
-      const newReview = await ReviewService.createReview(reviewData);
+      const response = await ReviewService.createReview(reviewData);
+      const newReview = response;
       setReviews([...reviews, newReview]);
       setComment('');
       setRating(0);
@@ -124,7 +126,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ propertyId }) => {
 
   const formatEmail = (email: string) => {
     if (!email) return 'Guest';
-    
+
     // Show only the first part of the email
     const namePart = email.split('@')[0];
     // Capitalize first letter
@@ -169,8 +171,8 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ propertyId }) => {
               onChange={(e) => setComment(e.target.value)}
               className="min-h-24 bg-input text-foreground"
             />
-            <Button 
-              onClick={handleSubmitReview} 
+            <Button
+              onClick={handleSubmitReview}
               disabled={isSubmitting || rating === 0}
               className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
@@ -217,7 +219,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ propertyId }) => {
             <div className="py-8 text-center">
               <p className="text-muted-foreground">No reviews yet. Be the first to share your experience!</p>
             </div>
-                      )}
+          )}
         </CardContent>
       </Card>
     </div>
