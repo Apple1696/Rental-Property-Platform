@@ -154,9 +154,30 @@ export const authService = {
         }
     },
 
-    isAuthenticated: () => {
-        return !!localStorage.getItem('token');
-    },
+   isAuthenticated: () => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    
+    if (!token || !userData) {
+        return false;
+    }
+    
+    try {
+        // Optionally check token expiration if you're using JWT
+        // const decodedToken = jwtDecode(token);
+        // if (decodedToken.exp * 1000 < Date.now()) return false;
+        
+        // Verify user data can be parsed
+        JSON.parse(userData);
+        return true;
+    } catch (error) {
+        console.error('Authentication validation error:', error);
+        // Clean up invalid data
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        return false;
+    }
+},
 
     forgotPassword: async (request: ForgotPasswordRequest) => {
         try {

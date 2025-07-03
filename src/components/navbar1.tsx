@@ -112,16 +112,46 @@ const Navbar1 = ({
 }: Navbar1Props) => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userInitials, setUserInitials] = useState("U");
+const [userInitials, setUserInitials] = useState("");
 
-  const checkAuth = () => {
-    const isAuth = authService.isAuthenticated();
-    setIsAuthenticated(isAuth);
-    // TODO: Get user data from localStorage or API
-    // For now, using placeholder initials
-    setUserInitials("U");
-  };
-
+const checkAuth = () => {
+  const isAuth = authService.isAuthenticated();
+  setIsAuthenticated(isAuth);
+  
+  if (isAuth) {
+    try {
+      // Get user data from localStorage
+      const userData = localStorage.getItem('user');
+      if (userData) {
+        const user = JSON.parse(userData);
+        if (user && user.name) {
+          // Extract initials from user's name
+          const nameParts = user.name.split(' ');
+          let initials = nameParts[0][0]; // First letter of first name
+          
+          // Add first letter of last name if available
+          if (nameParts.length > 1) {
+            initials += nameParts[nameParts.length - 1][0];
+          }
+          
+          setUserInitials(initials.toUpperCase());
+        } else {
+          setUserInitials("U"); // Fallback if name is not available
+        }
+      } else {
+        // No user data found even though token exists
+        setIsAuthenticated(false);
+        localStorage.removeItem('token'); // Clear potentially invalid token
+      }
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      setIsAuthenticated(false);
+      setUserInitials("");
+    }
+  } else {
+    setUserInitials(""); // Clear initials when not authenticated
+  }
+};
   useEffect(() => {
     // Check auth state when component mounts
     checkAuth();
@@ -155,7 +185,7 @@ const Navbar1 = ({
 
 
 const renderAuthButtons = () => {
-  if (isAuthenticated) {
+  if (isAuthenticated && userInitials) {
     return (
       <div className="flex items-center gap-2">
         <Avatar className="h-8 w-8">
