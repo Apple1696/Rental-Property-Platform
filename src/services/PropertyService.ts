@@ -37,8 +37,22 @@ export interface PropertyResponse {
   code: number;
   data: {
     properties: Property[];
+    page: number;
+    size: number;
+    totalElements: number;
+    totalPages: number;
   };
+  message: string;
 }
+
+export interface PaginatedPropertyResult {
+  properties: Property[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+}
+
 
 export interface DayPrice {
   dayOfWeek: number;
@@ -120,16 +134,22 @@ export interface MyBookingsResponse {
 }
 
 class PropertyService {
-  static async getAllProperties(): Promise<Property[]> {
+  static async getAllProperties(page: number = 0, size: number = 10): Promise<PaginatedPropertyResult> {
     try {
-      const response = await api.get<PropertyResponse>('/booking-service/api/property');
-      return response.data.data.properties;
+      const response = await api.get<PropertyResponse>(`/booking-service/api/property?page=${page}&size=${size}`);
+      return {
+        properties: response.data.data.properties,
+        page: response.data.data.page,
+        size: response.data.data.size,
+        totalElements: response.data.data.totalElements,
+        totalPages: response.data.data.totalPages
+      };
     } catch (error) {
       console.error('Error fetching properties:', error);
       throw error;
     }
   }
-
+  
   static async getPropertyById(id: string): Promise<Property> {
     try {
       const response = await api.get<{ code: number; data: Property }>(`/booking-service/api/property/${id}`);

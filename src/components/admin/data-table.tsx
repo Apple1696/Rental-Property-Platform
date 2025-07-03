@@ -302,10 +302,10 @@ export function DataTable() {
   React.useEffect(() => {
     async function fetchProperties() {
       try {
-        const properties = await PropertyService.getAllProperties()
+        const response = await PropertyService.getAllProperties()
         
         // Transform properties to match our schema
-        const formattedProperties = properties.map(property => ({
+        const formattedProperties = response.properties.map(property => ({
           id: property.id,
           title: property.title,
           propertyType: property.propertyType,
