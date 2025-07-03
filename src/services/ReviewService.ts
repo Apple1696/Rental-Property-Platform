@@ -64,6 +64,20 @@ class ReviewService {
   }
 
   /**
+   * Fetches all reviews
+   * @returns Promise with an array of all reviews
+   */
+  static async getAllReviews(): Promise<Review[]> {
+    try {
+      const response = await api.get<ReviewResponse>('user-service/api/review');
+      return response.data.data;
+    } catch (error) {
+      console.error('Error fetching all reviews:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Gets the count of reviews within a date range
    * @param fromDate The start date in ISO format (YYYY-MM-DD)
    * @param toDate The end date in ISO format (YYYY-MM-DD)

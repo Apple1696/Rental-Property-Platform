@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import AdminLayout from '@/layouts/AdminLayout';
 import { ReviewCards } from './ReviewCards';
+import ReviewTable from './ReviewTable';
 import DashboardService from '@/services/DashboardService';
 import ReviewService from '@/services/ReviewService';
 
@@ -10,7 +11,7 @@ export default function ReviewsPage() {
   const [loading, setLoading] = useState(true);
   
   // Mock data for review-specific stats not included in DashboardService
-  const [reviewStats, setReviewStats] = useState({
+  const [reviewStats] = useState({
     averageRating: 4.6,
     pendingReviews: 24,
     approvedReviews: 412,
@@ -33,9 +34,9 @@ export default function ReviewsPage() {
         const data = await DashboardService.getDashboardData(fromDate, toDate);
         setDashboardData(data);
         
-// Fetch reviews count using ReviewService
-const count = await ReviewService.getReviewsCount(fromDate, toDate);
-setReviewsCount(count);
+        // Fetch reviews count using ReviewService
+        const count = await ReviewService.getReviewsCount(fromDate, toDate);
+        setReviewsCount(count);
       } catch (error) {
         console.error(error);
       } finally {
@@ -69,13 +70,10 @@ setReviewsCount(count);
             newReviewsWeek={reviewStats.newReviewsWeek}
           />
           
-          {/* Additional review management content can go here */}
+          {/* Review Management section with ReviewTable */}
           <section className="mt-6">
             <h2 className="mb-4 text-xl font-semibold">Review Management</h2>
-            {/* Additional components like review tables, filters, etc. */}
-            <div className="p-6 border rounded-lg bg-card text-card-foreground text-center">
-              <p className="text-muted-foreground">Review management table will be displayed here</p>
-            </div>
+            <ReviewTable />
           </section>
         </div>
       )}

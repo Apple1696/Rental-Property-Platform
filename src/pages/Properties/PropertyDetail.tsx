@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Users, Bed, Bath, Clock, Star, Wifi, Car, Coffee } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,8 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
-import { toast } from 'sonner';
-import PropertyService, { Property, BookingRequest } from '../../services/PropertyService';
+import PropertyService, { Property } from '../../services/PropertyService';
 import ReviewSection from '@/components/ReviewSection';
 
 const PropertyDetail = () => {
@@ -20,7 +19,7 @@ const PropertyDetail = () => {
   const [checkInDate, setCheckInDate] = useState<Date>();
   const [checkOutDate, setCheckOutDate] = useState<Date>();
   const [guests, setGuests] = useState(1);
-  const [isBooking, setIsBooking] = useState(false);
+  const [isBooking] = useState(false);
 
   useEffect(() => {
     const fetchProperty = async () => {

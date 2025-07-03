@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ArrowUpIcon, ArrowDownIcon, AlertCircleIcon, CheckCircleIcon, TrendingUpIcon } from "lucide-react";
@@ -83,7 +82,7 @@ export function OverviewCards({
             </h3>
             <div className="flex items-center justify-between">
               <div className="text-2xl font-bold">
-                {formatCurrency(completedPayments)}
+                {(completedPayments)}
               </div>
               <div className="flex items-center text-green-600 dark:text-green-400">
                 <CheckCircleIcon className="h-4 w-4 mr-1" />
@@ -113,7 +112,7 @@ export function OverviewCards({
               )}
             </div>
             <div className="text-2xl font-bold">
-              {formatCurrency(pendingPayments)}
+              {(pendingPayments)}
             </div>
             <Progress 
               value={pendingPaymentsPercentage} 

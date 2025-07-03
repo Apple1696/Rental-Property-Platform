@@ -1,4 +1,4 @@
-import { Book, Menu, Sunset, Trees, Zap, User, LogOut } from "lucide-react";
+import {  Menu, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { authService } from "@/services/Authentication";
@@ -25,13 +25,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface MenuItem {
