@@ -34,7 +34,7 @@ const Hero151 = ({
   description = "Discover unique homes, luxury apartments, and stunning properties for your next getaway. From cozy retreats to urban adventures, find the perfect place to stay.",
   button = {
     text: "Explore Now",
-    url: "/search",
+    url: "/properties",
   },
   testimonial = {
     quote: "Found my dream vacation home within minutes. The photos were exactly as advertised!",
