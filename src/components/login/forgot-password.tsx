@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { authService } from "@/services/Authentication"
+import { authService } from "@/services/authentication"
 import { useNavigate } from "react-router-dom"
 
 export function ForgotPasswordForm() {

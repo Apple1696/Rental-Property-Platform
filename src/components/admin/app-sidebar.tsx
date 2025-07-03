@@ -20,7 +20,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
-import { authService } from "@/services/Authentication"
+import { authService } from "@/services/authentication"
 
 
 // Admin navigation data

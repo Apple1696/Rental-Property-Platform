@@ -1,7 +1,7 @@
 import { Book, Menu, Sunset, Trees, Zap, User, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { authService } from "@/services/Authentication";
+import { authService } from "@/services/authentication";
 
 import {
   Accordion,

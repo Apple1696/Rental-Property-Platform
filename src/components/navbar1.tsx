@@ -1,7 +1,6 @@
 import {  Menu, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { authService } from "@/services/Authentication";
 
 import {
   Accordion,
@@ -27,6 +26,7 @@ import {
 } from "@/components/ui/sheet";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { authService } from "@/services/authentication";
 
 interface MenuItem {
   title: string;
