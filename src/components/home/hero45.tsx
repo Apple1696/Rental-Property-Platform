@@ -47,7 +47,7 @@ const Hero45 = ({
   ],
 }: Hero45Props) => {
   return (
-    <section className="py-32" style={{ backgroundColor: '#BB404B' }}>
+    <section className="py-32" style={{ backgroundColor: '#607a61ff' }}>
       <div className="container overflow-hidden  mx-auto">
         <div className="mb-20 flex flex-col items-center gap-6 text-center">
           <Badge variant="outline" className="border-white text-white">{badge}</Badge>
@@ -59,7 +59,7 @@ const Hero45 = ({
             alt={imageAlt}
             className="aspect-video max-h-[500px] w-full rounded-xl object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#BB404B] via-transparent to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#607a61ff] via-transparent to-transparent"></div>
           <div className="absolute -top-28 -right-28 -z-10 aspect-video h-72 w-96 [background-size:12px_12px] opacity-40 [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_20%,transparent_100%)] sm:bg-[radial-gradient(rgba(255,255,255,0.2)_1px,transparent_1px)]"></div>
           <div className="absolute -top-28 -left-28 -z-10 aspect-video h-72 w-96 [background-size:12px_12px] opacity-40 [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_20%,transparent_100%)] sm:bg-[radial-gradient(rgba(255,255,255,0.2)_1px,transparent_1px)]"></div>
         </div>

@@ -218,7 +218,7 @@ const renderAuthButtons = () => {
 };
 
   return (
-    <section className="py-4" style={{ backgroundColor: '#B03F4A' }}>
+    <section className="py-4" style={{ backgroundColor: '#607a61ff' }}>
       <div className="container  mx-auto">
         {/* Desktop Menu */}
         <nav className="hidden justify-between lg:flex">
